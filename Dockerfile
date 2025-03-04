@@ -11,7 +11,7 @@ WORKDIR /app
 
 # Set production environment
 ENV NODE_ENV="staging"
-ENV VITE_DOMAIN="https://arkhet-pilot-staging.up.railway.app"
+ENV VITE_DOMAIN="https://arkhet-dev.onrender.com"
 ENV VITE_GOOGLE_FONTS_API_KEY="AIzaSyAw5NETsuWNzIjTi9cEOg8TKmlUXN2xqgM"
 
 
