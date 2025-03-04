@@ -1,0 +1,108 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+    font-family: "Nunito Sans";
+    src: url(../fonts/Nunito_Sans/NunitoSans-VariableFont_YTLC,opsz,wdth,wght.ttf);
+}
+
+@font-face {
+    font-family: "OCR A Extended";
+    src: url(../fonts/OCRAEXT.ttf)
+}
+
+.font {
+    font-family: "Nunito Sans";
+}
+
+.ocrfont {
+    font-family: "OCR A Extended";
+}
+
+.glow {
+    border: 2px solid #fff;
+    /* Add a border */
+    transition: all ease-in-out 0.5s;
+    /* Smooth transition */
+}
+
+.glow:hover {
+    box-shadow: 0 0 2px #8d51beb2, 0 0 2px #6d2ba3b2, 0 0 3px #8647b9b2,
+        0 0 4px #9462bdb2, 0 0 5px #a285b9b2, 0 0 6px #e7e7e7b2;
+    transition: all ease-in-out 0.2s;
+}
+
+/* for color picker */
+.small .react-colorful {
+    width: 170px;
+    height: 170px;
+}
+
+.small .react-colorful__hue {
+    height: 20px;
+}
+
+/* Webkit Browsers (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+    width: 12px;
+    /* Set the width of the scrollbar */
+}
+
+::-webkit-scrollbar-track {
+    background: #333;
+    /* Set the background of the track */
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #888;
+    /* Set the color of the thumb */
+    border-radius: 10px;
+    /* Add rounded corners */
+    border: 3px solid #333;
+    /* Optional: Add a border around the thumb */
+}
+
+/* Firefox */
+* {
+    scrollbar-width: thin;
+    /* Thin scrollbar */
+    scrollbar-color: #888 #333;
+    /* Thumb and track colors */
+}
+
+@media (min-width: 1024px) {
+    .glow {
+        border: 2px solid #fff;
+        /* Add a border */
+        transition: all ease-in-out 0.5s;
+        /* Smooth transition */
+    }
+
+    .glow:hover {
+        box-shadow: 0 0 2px #8d51beb2, 0 0 2px #6d2ba3b2, 0 0 3px #8647b9b2,
+            0 0 4px #9462bdb2, 0 0 5px #a285b9b2, 0 0 6px #e7e7e7b2;
+        transition: all ease-in-out 0.2s;
+    }
+}
+
+#circle-container {
+    width: 200px;
+    height: 200px;
+    margin: 50px auto;
+}
+
+.progress-text {
+    font-size: 1.25em;
+    color: black;
+    margin-bottom: 1em;
+    font-weight: 600;
+}
+
+textarea {
+    resize: none;
+}
+
+.arkhet-cursor {
+    cursor: url("/cursor.cur"), auto;
+}

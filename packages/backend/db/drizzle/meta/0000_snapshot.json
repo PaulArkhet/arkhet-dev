@@ -1,0 +1,2617 @@
+{
+  "id": "3016482f-af1a-4686-8c25-9ef7c18c6a79",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.datasets": {
+      "name": "datasets",
+      "schema": "",
+      "columns": {
+        "dataset_id": {
+          "name": "dataset_id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "title": {
+          "name": "title",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "content": {
+          "name": "content",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "edited_at": {
+          "name": "edited_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "active": {
+          "name": "active",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "datasets_user_id_users_user_id_fk": {
+          "name": "datasets_user_id_users_user_id_fk",
+          "tableFrom": "datasets",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "user_id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.multipage_path": {
+      "name": "multipage_path",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "projectId": {
+          "name": "projectId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "shapeStartId": {
+          "name": "shapeStartId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "shapeStartHandleType": {
+          "name": "shapeStartHandleType",
+          "type": "handleType",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "shapeEndId": {
+          "name": "shapeEndId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "shapeEndHandleType": {
+          "name": "shapeEndHandleType",
+          "type": "handleType",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "edited_at": {
+          "name": "edited_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "pageExcludeList": {
+          "name": "pageExcludeList",
+          "type": "varchar[]",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "ARRAY[]::text[]"
+        },
+        "direction": {
+          "name": "direction",
+          "type": "direction",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "multipage_path_projectId_projects_project_id_fk": {
+          "name": "multipage_path_projectId_projects_project_id_fk",
+          "tableFrom": "multipage_path",
+          "tableTo": "projects",
+          "columnsFrom": [
+            "projectId"
+          ],
+          "columnsTo": [
+            "project_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.projects": {
+      "name": "projects",
+      "schema": "",
+      "columns": {
+        "project_id": {
+          "name": "project_id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "title": {
+          "name": "title",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "img_src": {
+          "name": "img_src",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "edited_at": {
+          "name": "edited_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "iterations": {
+          "name": "iterations",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "active": {
+          "name": "active",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "projects_user_id_users_user_id_fk": {
+          "name": "projects_user_id_users_user_id_fk",
+          "tableFrom": "projects",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "user_id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.prototypes": {
+      "name": "prototypes",
+      "schema": "",
+      "columns": {
+        "prototype_id": {
+          "name": "prototype_id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "project_id": {
+          "name": "project_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "source_code": {
+          "name": "source_code",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "thumbnail_img": {
+          "name": "thumbnail_img",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "active": {
+          "name": "active",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "prototypes_project_id_projects_project_id_fk": {
+          "name": "prototypes_project_id_projects_project_id_fk",
+          "tableFrom": "prototypes",
+          "tableTo": "projects",
+          "columnsFrom": [
+            "project_id"
+          ],
+          "columnsTo": [
+            "project_id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.button": {
+      "name": "button",
+      "schema": "",
+      "columns": {
+        "shapeId": {
+          "name": "shapeId",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "title": {
+          "name": "title",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "subtype": {
+          "name": "subtype",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "size": {
+          "name": "size",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "button_shapeId_shapes_id_fk": {
+          "name": "button_shapeId_shapes_id_fk",
+          "tableFrom": "button",
+          "tableTo": "shapes",
+          "columnsFrom": [
+            "shapeId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.card_children": {
+      "name": "card_children",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "cardId": {
+          "name": "cardId",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "childId": {
+          "name": "childId",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "card_children_cardId_card_shapeId_fk": {
+          "name": "card_children_cardId_card_shapeId_fk",
+          "tableFrom": "card_children",
+          "tableTo": "card",
+          "columnsFrom": [
+            "cardId"
+          ],
+          "columnsTo": [
+            "shapeId"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "card_children_childId_shapes_id_fk": {
+          "name": "card_children_childId_shapes_id_fk",
+          "tableFrom": "card_children",
+          "tableTo": "shapes",
+          "columnsFrom": [
+            "childId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.card": {
+      "name": "card",
+      "schema": "",
+      "columns": {
+        "shapeId": {
+          "name": "shapeId",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "title": {
+          "name": "title",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "description": {
+          "name": "description",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "hasInstances": {
+          "name": "hasInstances",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "card_shapeId_shapes_id_fk": {
+          "name": "card_shapeId_shapes_id_fk",
+          "tableFrom": "card",
+          "tableTo": "shapes",
+          "columnsFrom": [
+            "shapeId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.chatbot": {
+      "name": "chatbot",
+      "schema": "",
+      "columns": {
+        "shapeId": {
+          "name": "shapeId",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "chatbot_shapeId_shapes_id_fk": {
+          "name": "chatbot_shapeId_shapes_id_fk",
+          "tableFrom": "chatbot",
+          "tableTo": "shapes",
+          "columnsFrom": [
+            "shapeId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.checkbox": {
+      "name": "checkbox",
+      "schema": "",
+      "columns": {
+        "shapeId": {
+          "name": "shapeId",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "subtype": {
+          "name": "subtype",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "label": {
+          "name": "label",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "option1": {
+          "name": "option1",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "option2": {
+          "name": "option2",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "checkbox_shapeId_shapes_id_fk": {
+          "name": "checkbox_shapeId_shapes_id_fk",
+          "tableFrom": "checkbox",
+          "tableTo": "shapes",
+          "columnsFrom": [
+            "shapeId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.circle": {
+      "name": "circle",
+      "schema": "",
+      "columns": {
+        "shapeId": {
+          "name": "shapeId",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "circle_shapeId_shapes_id_fk": {
+          "name": "circle_shapeId_shapes_id_fk",
+          "tableFrom": "circle",
+          "tableTo": "shapes",
+          "columnsFrom": [
+            "shapeId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.divider": {
+      "name": "divider",
+      "schema": "",
+      "columns": {
+        "shapeId": {
+          "name": "shapeId",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "divider_shapeId_shapes_id_fk": {
+          "name": "divider_shapeId_shapes_id_fk",
+          "tableFrom": "divider",
+          "tableTo": "shapes",
+          "columnsFrom": [
+            "shapeId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.dropdown": {
+      "name": "dropdown",
+      "schema": "",
+      "columns": {
+        "shapeId": {
+          "name": "shapeId",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "iconSrc": {
+          "name": "iconSrc",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "option1": {
+          "name": "option1",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "option2": {
+          "name": "option2",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "option3": {
+          "name": "option3",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "dropdown_shapeId_shapes_id_fk": {
+          "name": "dropdown_shapeId_shapes_id_fk",
+          "tableFrom": "dropdown",
+          "tableTo": "shapes",
+          "columnsFrom": [
+            "shapeId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.image": {
+      "name": "image",
+      "schema": "",
+      "columns": {
+        "shapeId": {
+          "name": "shapeId",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "image_shapeId_shapes_id_fk": {
+          "name": "image_shapeId_shapes_id_fk",
+          "tableFrom": "image",
+          "tableTo": "shapes",
+          "columnsFrom": [
+            "shapeId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.input_field": {
+      "name": "input_field",
+      "schema": "",
+      "columns": {
+        "shapeId": {
+          "name": "shapeId",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "title": {
+          "name": "title",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "input_field_shapeId_shapes_id_fk": {
+          "name": "input_field_shapeId_shapes_id_fk",
+          "tableFrom": "input_field",
+          "tableTo": "shapes",
+          "columnsFrom": [
+            "shapeId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.instance": {
+      "name": "instance",
+      "schema": "",
+      "columns": {
+        "shapeId": {
+          "name": "shapeId",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "parentId": {
+          "name": "parentId",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "instance_shapeId_shapes_id_fk": {
+          "name": "instance_shapeId_shapes_id_fk",
+          "tableFrom": "instance",
+          "tableTo": "shapes",
+          "columnsFrom": [
+            "shapeId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "instance_parentId_shapes_id_fk": {
+          "name": "instance_parentId_shapes_id_fk",
+          "tableFrom": "instance",
+          "tableTo": "shapes",
+          "columnsFrom": [
+            "parentId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.navigation": {
+      "name": "navigation",
+      "schema": "",
+      "columns": {
+        "shapeId": {
+          "name": "shapeId",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "content": {
+          "name": "content",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "fontColor": {
+          "name": "fontColor",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "fontSize": {
+          "name": "fontSize",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "navigation_shapeId_shapes_id_fk": {
+          "name": "navigation_shapeId_shapes_id_fk",
+          "tableFrom": "navigation",
+          "tableTo": "shapes",
+          "columnsFrom": [
+            "shapeId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.page": {
+      "name": "page",
+      "schema": "",
+      "columns": {
+        "shapeId": {
+          "name": "shapeId",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "subtype": {
+          "name": "subtype",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "title": {
+          "name": "title",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "description": {
+          "name": "description",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "page_shapeId_shapes_id_fk": {
+          "name": "page_shapeId_shapes_id_fk",
+          "tableFrom": "page",
+          "tableTo": "shapes",
+          "columnsFrom": [
+            "shapeId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.radio": {
+      "name": "radio",
+      "schema": "",
+      "columns": {
+        "shapeId": {
+          "name": "shapeId",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "subtype": {
+          "name": "subtype",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "label": {
+          "name": "label",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "option1": {
+          "name": "option1",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "option2": {
+          "name": "option2",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "option3": {
+          "name": "option3",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "radio_shapeId_shapes_id_fk": {
+          "name": "radio_shapeId_shapes_id_fk",
+          "tableFrom": "radio",
+          "tableTo": "shapes",
+          "columnsFrom": [
+            "shapeId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.rectangle": {
+      "name": "rectangle",
+      "schema": "",
+      "columns": {
+        "shapeId": {
+          "name": "shapeId",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "rectangle_shapeId_shapes_id_fk": {
+          "name": "rectangle_shapeId_shapes_id_fk",
+          "tableFrom": "rectangle",
+          "tableTo": "shapes",
+          "columnsFrom": [
+            "shapeId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.shapes": {
+      "name": "shapes",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "xOffset": {
+          "name": "xOffset",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "yOffset": {
+          "name": "yOffset",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "width": {
+          "name": "width",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "height": {
+          "name": "height",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "minWidth": {
+          "name": "minWidth",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "maxWidth": {
+          "name": "maxWidth",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "minHeight": {
+          "name": "minHeight",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "maxHeight": {
+          "name": "maxHeight",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "isInstanceChild": {
+          "name": "isInstanceChild",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "zIndex": {
+          "name": "zIndex",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "projectId": {
+          "name": "projectId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "type": {
+          "name": "type",
+          "type": "shape_type",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "shapes_projectId_projects_project_id_fk": {
+          "name": "shapes_projectId_projects_project_id_fk",
+          "tableFrom": "shapes",
+          "tableTo": "projects",
+          "columnsFrom": [
+            "projectId"
+          ],
+          "columnsTo": [
+            "project_id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.text": {
+      "name": "text",
+      "schema": "",
+      "columns": {
+        "shapeId": {
+          "name": "shapeId",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "fontSize": {
+          "name": "fontSize",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "fontColor": {
+          "name": "fontColor",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "content": {
+          "name": "content",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "text_shapeId_shapes_id_fk": {
+          "name": "text_shapeId_shapes_id_fk",
+          "tableFrom": "text",
+          "tableTo": "shapes",
+          "columnsFrom": [
+            "shapeId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.toggle": {
+      "name": "toggle",
+      "schema": "",
+      "columns": {
+        "shapeId": {
+          "name": "shapeId",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "toggle_shapeId_shapes_id_fk": {
+          "name": "toggle_shapeId_shapes_id_fk",
+          "tableFrom": "toggle",
+          "tableTo": "shapes",
+          "columnsFrom": [
+            "shapeId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.button_styles": {
+      "name": "button_styles",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "color": {
+          "name": "color",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "textColor": {
+          "name": "textColor",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "fontSize": {
+          "name": "fontSize",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "borderRadius": {
+          "name": "borderRadius",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "paddingRight": {
+          "name": "paddingRight",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "paddingLeft": {
+          "name": "paddingLeft",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "paddingTop": {
+          "name": "paddingTop",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "paddingBottom": {
+          "name": "paddingBottom",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "borderColor": {
+          "name": "borderColor",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "borderWidth": {
+          "name": "borderWidth",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "backgroundColor": {
+          "name": "backgroundColor",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "hoveredBackgroundColor": {
+          "name": "hoveredBackgroundColor",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "hoveredTextColor": {
+          "name": "hoveredTextColor",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "isHovered": {
+          "name": "isHovered",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.card_styles": {
+      "name": "card_styles",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "backgroundColor": {
+          "name": "backgroundColor",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "borderRadius": {
+          "name": "borderRadius",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "border": {
+          "name": "border",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "hoveredBackgroundColor": {
+          "name": "hoveredBackgroundColor",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "color": {
+          "name": "color",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "textColor": {
+          "name": "textColor",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "mainCardPicture": {
+          "name": "mainCardPicture",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "mainCardButton": {
+          "name": "mainCardButton",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "subCardPicture": {
+          "name": "subCardPicture",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "listCardBorderRadius": {
+          "name": "listCardBorderRadius",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "listBackgroundColor": {
+          "name": "listBackgroundColor",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "listTextColor": {
+          "name": "listTextColor",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "listColor": {
+          "name": "listColor",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "listBorderRadius": {
+          "name": "listBorderRadius",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "listShowAvatar": {
+          "name": "listShowAvatar",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "listShowCheckbox": {
+          "name": "listShowCheckbox",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "listWidth": {
+          "name": "listWidth",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.checkbox_styles": {
+      "name": "checkbox_styles",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "backgroundColor": {
+          "name": "backgroundColor",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "border": {
+          "name": "border",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "height": {
+          "name": "height",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "width": {
+          "name": "width",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "cursor": {
+          "name": "cursor",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "borderRadius": {
+          "name": "borderRadius",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "checkedBorder": {
+          "name": "checkedBorder",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "checkedColor": {
+          "name": "checkedColor",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "checkedBackgroundColor": {
+          "name": "checkedBackgroundColor",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "checkedAlternateBorder": {
+          "name": "checkedAlternateBorder",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "checkedAlternateColor": {
+          "name": "checkedAlternateColor",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "checkedAlternateBackgroundColor": {
+          "name": "checkedAlternateBackgroundColor",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.internal_navigation_style": {
+      "name": "internal_navigation_style",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "internalBorderBottom": {
+          "name": "internalBorderBottom",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "internalBorderRadius": {
+          "name": "internalBorderRadius",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "internalPaddingBottom": {
+          "name": "internalPaddingBottom",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "activeColor": {
+          "name": "activeColor",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "activeTextDecoration": {
+          "name": "activeTextDecoration",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "activeTextDecorationThickness": {
+          "name": "activeTextDecorationThickness",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "activeMarginBottom": {
+          "name": "activeMarginBottom",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "activeTextDecorationOffset": {
+          "name": "activeTextDecorationOffset",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "activeBorderBottom": {
+          "name": "activeBorderBottom",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.radio_button_styles": {
+      "name": "radio_button_styles",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "height": {
+          "name": "height",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "width": {
+          "name": "width",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "borderColor": {
+          "name": "borderColor",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "borderWidth": {
+          "name": "borderWidth",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "borderRadius": {
+          "name": "borderRadius",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "borderColorChecked": {
+          "name": "borderColorChecked",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "color": {
+          "name": "color",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "customIconHeight": {
+          "name": "customIconHeight",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "customIconWidth": {
+          "name": "customIconWidth",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "customIconBackgroundColor": {
+          "name": "customIconBackgroundColor",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "customIconBorderRadius": {
+          "name": "customIconBorderRadius",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.button_label": {
+      "name": "button_label",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "label": {
+          "name": "label",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "segmentedButtonStylesId": {
+          "name": "segmentedButtonStylesId",
+          "type": "serial",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "button_label_segmentedButtonStylesId_segmented_button_styles_id_fk": {
+          "name": "button_label_segmentedButtonStylesId_segmented_button_styles_id_fk",
+          "tableFrom": "button_label",
+          "tableTo": "segmented_button_styles",
+          "columnsFrom": [
+            "segmentedButtonStylesId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.segmented_button_styles": {
+      "name": "segmented_button_styles",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "activeBgColor": {
+          "name": "activeBgColor",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "inactiveBgColor": {
+          "name": "inactiveBgColor",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "activeTextColor": {
+          "name": "activeTextColor",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "inactiveTextColor": {
+          "name": "inactiveTextColor",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "borderColor": {
+          "name": "borderColor",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "hoverBgColor": {
+          "name": "hoverBgColor",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.neutral_color_styles": {
+      "name": "neutral_color_styles",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "firstColor": {
+          "name": "firstColor",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "secondColor": {
+          "name": "secondColor",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "thirdColor": {
+          "name": "thirdColor",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.secondary_color_styles": {
+      "name": "secondary_color_styles",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "firstColor": {
+          "name": "firstColor",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "secondColor": {
+          "name": "secondColor",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.styleguides": {
+      "name": "styleguides",
+      "schema": "",
+      "columns": {
+        "styleguideId": {
+          "name": "styleguideId",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "buttonPrimaryId": {
+          "name": "buttonPrimaryId",
+          "type": "serial",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "buttonSecondaryId": {
+          "name": "buttonSecondaryId",
+          "type": "serial",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "buttonTertiaryId": {
+          "name": "buttonTertiaryId",
+          "type": "serial",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "buttonGhostId": {
+          "name": "buttonGhostId",
+          "type": "serial",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "cardStylesId": {
+          "name": "cardStylesId",
+          "type": "serial",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "checkboxStylesId": {
+          "name": "checkboxStylesId",
+          "type": "serial",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "primaryColor": {
+          "name": "primaryColor",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "secondaryColorStylesId": {
+          "name": "secondaryColorStylesId",
+          "type": "serial",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "neutralColorStylesId": {
+          "name": "neutralColorStylesId",
+          "type": "serial",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "radioButtonStylesId": {
+          "name": "radioButtonStylesId",
+          "type": "serial",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "filename": {
+          "name": "filename",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "typographyStylesId": {
+          "name": "typographyStylesId",
+          "type": "serial",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "textFieldStylesId": {
+          "name": "textFieldStylesId",
+          "type": "serial",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "toggleStylesId": {
+          "name": "toggleStylesId",
+          "type": "serial",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "internalNavigationStylesId": {
+          "name": "internalNavigationStylesId",
+          "type": "serial",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "segmentedButtonStylesId": {
+          "name": "segmentedButtonStylesId",
+          "type": "serial",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "editedAt": {
+          "name": "editedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "active": {
+          "name": "active",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": true
+        },
+        "userId": {
+          "name": "userId",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "styleguides_buttonPrimaryId_button_styles_id_fk": {
+          "name": "styleguides_buttonPrimaryId_button_styles_id_fk",
+          "tableFrom": "styleguides",
+          "tableTo": "button_styles",
+          "columnsFrom": [
+            "buttonPrimaryId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "styleguides_buttonSecondaryId_button_styles_id_fk": {
+          "name": "styleguides_buttonSecondaryId_button_styles_id_fk",
+          "tableFrom": "styleguides",
+          "tableTo": "button_styles",
+          "columnsFrom": [
+            "buttonSecondaryId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "styleguides_buttonTertiaryId_button_styles_id_fk": {
+          "name": "styleguides_buttonTertiaryId_button_styles_id_fk",
+          "tableFrom": "styleguides",
+          "tableTo": "button_styles",
+          "columnsFrom": [
+            "buttonTertiaryId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "styleguides_buttonGhostId_button_styles_id_fk": {
+          "name": "styleguides_buttonGhostId_button_styles_id_fk",
+          "tableFrom": "styleguides",
+          "tableTo": "button_styles",
+          "columnsFrom": [
+            "buttonGhostId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "styleguides_cardStylesId_card_styles_id_fk": {
+          "name": "styleguides_cardStylesId_card_styles_id_fk",
+          "tableFrom": "styleguides",
+          "tableTo": "card_styles",
+          "columnsFrom": [
+            "cardStylesId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "styleguides_checkboxStylesId_checkbox_styles_id_fk": {
+          "name": "styleguides_checkboxStylesId_checkbox_styles_id_fk",
+          "tableFrom": "styleguides",
+          "tableTo": "checkbox_styles",
+          "columnsFrom": [
+            "checkboxStylesId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "styleguides_secondaryColorStylesId_secondary_color_styles_id_fk": {
+          "name": "styleguides_secondaryColorStylesId_secondary_color_styles_id_fk",
+          "tableFrom": "styleguides",
+          "tableTo": "secondary_color_styles",
+          "columnsFrom": [
+            "secondaryColorStylesId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "styleguides_neutralColorStylesId_neutral_color_styles_id_fk": {
+          "name": "styleguides_neutralColorStylesId_neutral_color_styles_id_fk",
+          "tableFrom": "styleguides",
+          "tableTo": "neutral_color_styles",
+          "columnsFrom": [
+            "neutralColorStylesId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "styleguides_radioButtonStylesId_radio_button_styles_id_fk": {
+          "name": "styleguides_radioButtonStylesId_radio_button_styles_id_fk",
+          "tableFrom": "styleguides",
+          "tableTo": "radio_button_styles",
+          "columnsFrom": [
+            "radioButtonStylesId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "styleguides_typographyStylesId_typography_styles_id_fk": {
+          "name": "styleguides_typographyStylesId_typography_styles_id_fk",
+          "tableFrom": "styleguides",
+          "tableTo": "typography_styles",
+          "columnsFrom": [
+            "typographyStylesId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "styleguides_textFieldStylesId_text_field_styles_id_fk": {
+          "name": "styleguides_textFieldStylesId_text_field_styles_id_fk",
+          "tableFrom": "styleguides",
+          "tableTo": "text_field_styles",
+          "columnsFrom": [
+            "textFieldStylesId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "styleguides_toggleStylesId_toggle_styles_config_id_fk": {
+          "name": "styleguides_toggleStylesId_toggle_styles_config_id_fk",
+          "tableFrom": "styleguides",
+          "tableTo": "toggle_styles_config",
+          "columnsFrom": [
+            "toggleStylesId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "styleguides_internalNavigationStylesId_internal_navigation_style_id_fk": {
+          "name": "styleguides_internalNavigationStylesId_internal_navigation_style_id_fk",
+          "tableFrom": "styleguides",
+          "tableTo": "internal_navigation_style",
+          "columnsFrom": [
+            "internalNavigationStylesId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "styleguides_segmentedButtonStylesId_segmented_button_styles_id_fk": {
+          "name": "styleguides_segmentedButtonStylesId_segmented_button_styles_id_fk",
+          "tableFrom": "styleguides",
+          "tableTo": "segmented_button_styles",
+          "columnsFrom": [
+            "segmentedButtonStylesId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "styleguides_userId_users_user_id_fk": {
+          "name": "styleguides_userId_users_user_id_fk",
+          "tableFrom": "styleguides",
+          "tableTo": "users",
+          "columnsFrom": [
+            "userId"
+          ],
+          "columnsTo": [
+            "user_id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.text_field_styles": {
+      "name": "text_field_styles",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "inputStylePadding": {
+          "name": "inputStylePadding",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "inputStyleBorderWidth": {
+          "name": "inputStyleBorderWidth",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "inputStyleBorderColor": {
+          "name": "inputStyleBorderColor",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "inputStyleBorderStyle": {
+          "name": "inputStyleBorderStyle",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "inputStyleBorderRadius": {
+          "name": "inputStyleBorderRadius",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "inputStylePosition": {
+          "name": "inputStylePosition",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "inputStyleBackgroundColor": {
+          "name": "inputStyleBackgroundColor",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "inputStyleClearable": {
+          "name": "inputStyleClearable",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "inputStyleBorderColorChecked": {
+          "name": "inputStyleBorderColorChecked",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "labelStylePosition": {
+          "name": "labelStylePosition",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "labelStyleBackgroundColor": {
+          "name": "labelStyleBackgroundColor",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "labelStyleZIndex": {
+          "name": "labelStyleZIndex",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "labelStyleMarginTop": {
+          "name": "labelStyleMarginTop",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "labelStyleMarginLeft": {
+          "name": "labelStyleMarginLeft",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "labelStylePadding": {
+          "name": "labelStylePadding",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "supportingTextStyleFontSize": {
+          "name": "supportingTextStyleFontSize",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "supportingTextStyleColor": {
+          "name": "supportingTextStyleColor",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.toggle_styles_config": {
+      "name": "toggle_styles_config",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "isChecked": {
+          "name": "isChecked",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "checkedBackgroundColor": {
+          "name": "checkedBackgroundColor",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "uncheckedBackgroundColor": {
+          "name": "uncheckedBackgroundColor",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "checkedButtonColor": {
+          "name": "checkedButtonColor",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "uncheckedButtonColor": {
+          "name": "uncheckedButtonColor",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "checkedBorderColor": {
+          "name": "checkedBorderColor",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "uncheckedBorderColor": {
+          "name": "uncheckedBorderColor",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "checkedThumbSize": {
+          "name": "checkedThumbSize",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "uncheckedThumbSize": {
+          "name": "uncheckedThumbSize",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "styleJSON": {
+          "name": "styleJSON",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "borderRadius": {
+          "name": "borderRadius",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.typography_styles": {
+      "name": "typography_styles",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "customizationEnabledFont": {
+          "name": "customizationEnabledFont",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "selectedFont": {
+          "name": "selectedFont",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "h1Size": {
+          "name": "h1Size",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "h2Size": {
+          "name": "h2Size",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "h3Size": {
+          "name": "h3Size",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "h4Size": {
+          "name": "h4Size",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "h5Size": {
+          "name": "h5Size",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "h6Size": {
+          "name": "h6Size",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "paragraphSize": {
+          "name": "paragraphSize",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "linkSize": {
+          "name": "linkSize",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "h1Weight": {
+          "name": "h1Weight",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "h2Weight": {
+          "name": "h2Weight",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "h3Weight": {
+          "name": "h3Weight",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "h4Weight": {
+          "name": "h4Weight",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "h5Weight": {
+          "name": "h5Weight",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "h6Weight": {
+          "name": "h6Weight",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "paragraphWeight": {
+          "name": "paragraphWeight",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "linkWeight": {
+          "name": "linkWeight",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.users": {
+      "name": "users",
+      "schema": "",
+      "columns": {
+        "user_id": {
+          "name": "user_id",
+          "type": "varchar",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "email": {
+          "name": "email",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "username": {
+          "name": "username",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "profile_picture_src": {
+          "name": "profile_picture_src",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "active": {
+          "name": "active",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {
+    "public.direction": {
+      "name": "direction",
+      "schema": "public",
+      "values": [
+        "vertical",
+        "horizontal"
+      ]
+    },
+    "public.handleType": {
+      "name": "handleType",
+      "schema": "public",
+      "values": [
+        "top",
+        "left",
+        "bottom",
+        "right"
+      ]
+    },
+    "public.shape_type": {
+      "name": "shape_type",
+      "schema": "public",
+      "values": [
+        "page",
+        "button",
+        "inputField",
+        "text",
+        "checkbox",
+        "radio",
+        "toggle",
+        "card",
+        "image",
+        "dropdown",
+        "circle",
+        "chatbot",
+        "divider",
+        "navigation",
+        "instance",
+        "rectangle"
+      ]
+    }
+  },
+  "schemas": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}
