@@ -1,4 +1,4 @@
-import { MutableRefObject, useEffect, useState } from "react";
+import { MutableRefObject, useEffect, useRef, useState } from "react";
 import cancelIcon from "/cancel.svg";
 import cornerIcon from "/controlcorner.svg";
 import {
@@ -15,11 +15,6 @@ import { addNotification, NotificationItem } from "./AINotifications";
 
 export default function MagicMoment(props: { socket: Socket }) {
   // const { progress, setProgress } = useMagicMomentStore();
-  const [needsUpdate, setNeedsUpdate] = useState(false);
-  const [notificationItems, setNotificationItems] = useState<
-    NotificationItem[]
-  >([]);
-
   // useEffect(() => {
   //   const interval = setInterval(() => {
   //     setProgress((prev: number) => (prev < 20 ? prev + 1 : 20));
@@ -27,6 +22,10 @@ export default function MagicMoment(props: { socket: Socket }) {
 
   //   return () => clearInterval(interval);
   // }, []);
+  const [needsUpdate, setNeedsUpdate] = useState(false);
+  const { notificationItems, setNotificationItems } = useMagicMomentStore();
+
+  const containerRef = useRef<HTMLDivElement>(null);
 
   async function handleNotificationEvent(notification: NotificationItem) {
     addNotification(notification, setNotificationItems, setNeedsUpdate);
@@ -41,6 +40,12 @@ export default function MagicMoment(props: { socket: Socket }) {
     };
   }, []);
 
+  useEffect(() => {
+    if (containerRef.current) {
+      containerRef.current.scrollTop = containerRef.current.scrollHeight;
+    }
+  }, [notificationItems.length]);
+
   return (
     <div className="arkhet-cursor">
       <div className="pt-[150px] text-center text-4xl font-bold">
@@ -53,7 +58,11 @@ export default function MagicMoment(props: { socket: Socket }) {
       <div className="flex flex-col pt-16 w-[700px] mx-auto">
         <div className="text-xl pb-5 font-bold">Generation history</div>
         <div className="bg-[#242424] p-5">
-          <div className="mx-auto h-[300px] overflow-y-auto ">
+          <div
+            ref={containerRef}
+            className="mx-auto h-[300px] overflow-y-auto "
+            onWheel={(event) => event.stopPropagation()}
+          >
             {notificationItems.map((item) => (
               <div className="py-2">
                 <h3 className="font-semibold text-lg">{item.title}</h3>

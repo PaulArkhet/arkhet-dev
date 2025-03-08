@@ -11,21 +11,21 @@ export type NotificationItem = z.infer<typeof notificationItemSchema>;
 
 export function addNotification(
   notification: NotificationItem,
-  setNotificationItems: React.Dispatch<
-    React.SetStateAction<NotificationItem[]>
-  >,
+  setNotificationItems: (
+    updater:
+      | NotificationItem[]
+      | ((prev: NotificationItem[]) => NotificationItem[])
+  ) => void,
   setNeedsUpdate: React.Dispatch<React.SetStateAction<boolean>>
 ) {
-  setNotificationItems((notificationItems) => {
-    const exists = notificationItems.some(
-      (notificationItem) => notificationItem.id === notification.id
-    );
-    if (exists) return notificationItems;
-
-    notificationItems.push(notification);
-    setNeedsUpdate(true);
-    return notificationItems;
+  setNotificationItems((prev) => {
+    if (prev.some((item) => item.id === notification.id)) {
+      return prev; // Avoid duplicates
+    }
+    return [...prev, notification]; // Immutable update
   });
+
+  setNeedsUpdate(true);
 }
 
 export function AINotifications(props: { socket: Socket }) {
@@ -35,25 +35,20 @@ export function AINotifications(props: { socket: Socket }) {
   >([]);
 
   async function handleNotificationEvent(notification: NotificationItem) {
-    // console.log("incoming notif: " + JSON.stringify(notification, null, 2));
-
     addNotification(notification, setNotificationItems, setNeedsUpdate);
 
-    // mark for deletion (for animation (opacity toggle) purposes)
     setTimeout(() => {
-      setNotificationItems((notificationItems) => {
-        const notificationToMarkIndex = notificationItems.findIndex(
-          (notificationItem) => notification.id === notificationItem.id
-        );
-        if (notificationToMarkIndex === -1) return notificationItems;
-        notificationItems[notificationToMarkIndex].markedForCleanup = true;
-        setNeedsUpdate(true);
+      setNotificationItems((prev) =>
+        prev.map((item) =>
+          item.id === notification.id
+            ? { ...item, markedForCleanup: true }
+            : item
+        )
+      );
 
-        // remove notif completely after timeout
-        setTimeout(() => deleteNotificationById(notification.id), 400);
+      setNeedsUpdate(true);
 
-        return notificationItems;
-      });
+      setTimeout(() => deleteNotificationById(notification.id), 400);
     }, NOTIFICATION_TIMEOUT_MILLISECONDS);
   }
 

@@ -57,7 +57,7 @@ export function DragAndDropIframe(props: {
     id: 0,
   });
   const [needsToUpdatePrototype, setNeedsToUpdatePrototype] = useState(false);
-  const { setProgress } = useMagicMomentStore();
+  const { setProgress, setNotificationItems } = useMagicMomentStore();
   const { mutate: updatePrototype, isPending: updatePrototypePending } =
     useUpdatePrototypeMutation();
 
@@ -98,6 +98,7 @@ export function DragAndDropIframe(props: {
       setIsPrototypeReady(true);
     }, 1000);
     setProgress(0);
+    setNotificationItems([]);
   }
 
   useEffect(() => {

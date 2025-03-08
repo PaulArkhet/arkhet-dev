@@ -406,7 +406,8 @@ function getDefaultShapeProps<T extends ShapeVariations["type"]>(
         ...baseProps,
         subtype: "Desktop",
         title: "New Page",
-        description: "add details here to clarify our AI",
+        description:
+          "Add a description here to help our AI system better understand your page",
         type: "page",
       };
       shape = page;
@@ -480,7 +481,8 @@ function getDefaultShapeProps<T extends ShapeVariations["type"]>(
       const card: Extract<Wireframe, { type: "card" }> = {
         ...baseProps,
         title: "New Component",
-        description: "add details here to clarify our AI",
+        description:
+          "Add a description here to help our AI system better understand your page",
         hasInstances: false,
         type: "card",
         childrenComponents: [],

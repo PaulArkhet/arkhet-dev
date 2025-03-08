@@ -232,10 +232,14 @@ export function Artboard() {
 
   useEffect(() => {
     if (prototypesQuery !== undefined && prototypesQuery.length > 0) {
-      setCurrentPrototype(prototypesQuery[0]);
+      const latestPrototype = prototypesQuery.reduce((latest, prototype) =>
+        prototype.createdAt > latest.createdAt ? prototype : latest
+      );
+
+      setCurrentPrototype(latestPrototype);
       setCurrentPrototypes(prototypesQuery);
     }
-  }, []);
+  }, [prototypesQuery]);
 
   useEffect(() => {
     document.addEventListener("click", handleClickOutside);
@@ -757,6 +761,8 @@ export function Artboard() {
         pageContent={pageContent}
         canvasRef={canvasRef}
         project={project}
+        permanentPaths={permanentPaths}
+        pageRefList={pageRefList}
       />
       <RightNav
         pageContent={pageContent}

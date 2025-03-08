@@ -95,7 +95,7 @@ async function updatePrototype(args: UpdatePrototypeArgs) {
     json: args.json,
   });
   if (!res.ok) {
-    throw new Error("Error creating project.");
+    throw new Error("Error updating prototype.");
   }
   const { newPrototype } = await res.json();
   console.log(newPrototype);
@@ -114,6 +114,60 @@ export const useUpdatePrototypeMutation = () => {
       queryClient.invalidateQueries({
         queryKey: ["prototypes"],
       });
+    },
+  });
+};
+
+async function deletePrototypeById({
+  prototypeId,
+  projectId,
+}: {
+  prototypeId: number;
+  projectId: number;
+}) {
+  const res = await client.api.v0.prototypes[":prototypeId"].delete.$post({
+    param: { prototypeId: prototypeId.toString() },
+  });
+  if (!res.ok) {
+    throw new Error("Error deleting prototype by id");
+  }
+  return { prototypeId, projectId: projectId };
+}
+
+export const useDeletePrototypeMutation = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: deletePrototypeById,
+    onSettled: (_data, _error, variables) => {
+      if (!variables) return;
+      const { projectId } = variables;
+      queryClient.invalidateQueries({
+        queryKey: ["prototypes", projectId],
+      });
+    },
+    onMutate: async (variables) => {
+      // Snapshot the previous value
+      const { prototypeId, projectId } = variables;
+      const previousPrototypes = queryClient.getQueryData([
+        "prototypes",
+        projectId,
+      ]) as Prototype[];
+
+      const protToDeleteIndex = previousPrototypes.findIndex(
+        (prot) => prot.prototypeId === prototypeId
+      );
+      if (protToDeleteIndex === -1) return;
+
+      const newPrototypes = previousPrototypes.toSpliced(protToDeleteIndex, 1);
+      // Optimistically update to the new value
+      queryClient.setQueryData(["prototypes", projectId], newPrototypes);
+
+      // Return a context with the previous and new todo
+      return { previousPrototypes, newPrototypes };
+    },
+    onError: (_err, _args, context) => {
+      if (!context) return;
+      queryClient.setQueryData(["prototypes"], context.previousPrototypes);
     },
   });
 };

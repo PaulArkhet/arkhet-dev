@@ -14,6 +14,7 @@ import { twMerge } from "tailwind-merge";
 import { getAllShapesForProjectQueryOptions } from "@/lib/api/shapes";
 import { useNavigate } from "@tanstack/react-router";
 import useDashboardStore from "@/store/DashboardStore";
+import { client } from "@/lib/api/client";
 
 export const Route = createFileRoute("/_authenticated/_sidenav/dashboard")({
   component: Dashboard,
@@ -71,6 +72,13 @@ function Dashboard() {
       );
     });
   }, [allProjectsData]);
+
+  useEffect(() => {
+    if (window.innerWidth < 760) {
+      const result = client.api.v0.auth.logout.$url();
+      window.location.href = result.toString();
+    }
+  }, []);
 
   return (
     <main className="relative w-full">

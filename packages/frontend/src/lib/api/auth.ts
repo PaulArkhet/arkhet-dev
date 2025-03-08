@@ -9,8 +9,16 @@ async function getCurrentUser() {
   if (!res.ok) {
     throw new Error("Error getting user"); // would like a better error handling setup
   }
-  const { user } = await res.json();
-  return { user: mapSerializedUserToSchema(user) };
+  const response = await res.json();
+
+  if (response.type === "valid") {
+    return {
+      user: mapSerializedUserToSchema(response.user),
+      type: response.type,
+    };
+  } else {
+    return response;
+  }
 }
 
 export const userQueryOptions = queryOptions({
@@ -19,8 +27,9 @@ export const userQueryOptions = queryOptions({
   staleTime: Infinity,
 });
 
-type SerializedUser = ExtractData<
-  Awaited<ReturnType<typeof client.api.v0.auth.me.$get>>
+type SerializedUser = Extract<
+  ExtractData<Awaited<ReturnType<typeof client.api.v0.auth.me.$get>>>,
+  { type: "valid" }
 >["user"];
 
 function mapSerializedUserToSchema(serializedUser: SerializedUser): User {

@@ -46,7 +46,7 @@ export default function SideNav() {
   }
 
   return (
-    <div className="fixed z-50 bg-zinc-900 pl-4 pt-5 h-auto min-h-screen w-[200px] top-0 left-0 flex flex-col border-r border-[#303030] overflow-y-auto justify-between">
+    <div className="hidden fixed z-50 bg-zinc-900 pl-4 pt-5 h-auto min-h-screen w-[200px] top-0 left-0 md:flex flex-col border-r border-[#303030] overflow-y-auto justify-between">
       <div>
         <div
           onClick={() => changeActivePage("dashboard")}
