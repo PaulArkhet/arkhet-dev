@@ -69,6 +69,7 @@ export function useTriggerGeneration(
       projectId: project?.projectId || 0,
       sourceCode: "",
       thumbnailImg: "",
+      title: "Version " + getPrototypesQueryData?.length || "0",
     });
     if (newPrototype) {
       console.log("Setting prototype to:", newPrototype);
@@ -197,7 +198,7 @@ export default function TopNav(props: {
 
   return (
     <div
-      className={`fixed top-0 left-[250px] w-[25%] sm:w-[45%] md:w-[50%] lg:w-[calc(100%_-_500px)] bg-[#242424] border-b border-b-zinc-700 flex items-center justify-between ${isHandToolActive ? "cursor-grab" : "arkhet-cursor"}`}
+      className={`fixed top-0 left-[250px] w-[25%] sm:w-[45%] md:w-[50%] lg:w-[calc(100%_-_500px)] bg-[#242424] border-b border-b-zinc-700 flex items-center justify-between ${isHandToolActive ? "cursor-grab" : "arkhet-cursor"} z-[9999]`}
     >
       <div className={`${pageContent === "Gen UI" && "hidden"}`}>
         <HoverCard openDelay={400} closeDelay={0}>
@@ -245,7 +246,7 @@ export default function TopNav(props: {
             sideOffset={10}
           >
             <p className="text-xs">
-              Press <span className="text-sm font-bold">r</span> to add a new
+              Press <span className="text-sm font-bold">p</span> to add a new
               page
             </p>
           </HoverCardContent>

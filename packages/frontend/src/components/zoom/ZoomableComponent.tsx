@@ -42,7 +42,12 @@ const ZoomableComponent = (props: {
     const handleWheel = (event: WheelEvent) => {
       if (event.ctrlKey) return; // Ignore pinch-to-zoom
 
-      pan({ x: -event.deltaX, y: -event.deltaY });
+      if (event.shiftKey) {
+        pan({ x: -event.deltaY, y: 0 });
+      } else {
+        pan({ x: -event.deltaX, y: -event.deltaY });
+      }
+
       event.preventDefault();
     };
 

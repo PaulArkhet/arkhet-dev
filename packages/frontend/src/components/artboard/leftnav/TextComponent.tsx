@@ -48,7 +48,9 @@ export default function TextComponent({
                 fill="currentColor"
               />
             </svg>
-            <p className="text-xs pt-5 pb-2">Text</p>
+            <p className="text-xs pt-5 pb-2">
+              <span className="font-bold">T</span>ext
+            </p>
           </button>
         </HoverCardTrigger>
         <HoverCardContent
@@ -56,7 +58,8 @@ export default function TextComponent({
           sideOffset={-40}
         >
           <p className="text-xs">
-            Press <span className="text-sm font-bold">t</span> to add a text
+            Press <span className="text-sm font-extrabold">t</span> to add a
+            text
           </p>
         </HoverCardContent>
       </HoverCard>

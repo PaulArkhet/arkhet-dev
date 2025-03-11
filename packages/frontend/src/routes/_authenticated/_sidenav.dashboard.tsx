@@ -14,6 +14,8 @@ import { twMerge } from "tailwind-merge";
 import { getAllShapesForProjectQueryOptions } from "@/lib/api/shapes";
 import { useNavigate } from "@tanstack/react-router";
 import useDashboardStore from "@/store/DashboardStore";
+import annoucements1 from "/announcements1.png";
+import annoucements2 from "/announcements2.png";
 import { client } from "@/lib/api/client";
 
 export const Route = createFileRoute("/_authenticated/_sidenav/dashboard")({
@@ -63,6 +65,8 @@ function Dashboard() {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { loadingProject, setLoadingProject } = useDashboardStore();
+  const [showDeleted, setShowDeleted] = useState(false);
+  const [animateOut, setAnimateOut] = useState(false);
 
   useEffect(() => {
     if (!allProjectsData) return;
@@ -82,6 +86,54 @@ function Dashboard() {
 
   return (
     <main className="relative w-full">
+      <div className="flex p-2 my-10">
+        <div className="relative border border-[#373541] rounded-lg flex mx-2">
+          <img
+            src={annoucements1}
+            alt=""
+            className="xl:w-[300px] 2xl:w-[100%] 2xl:h-auto"
+          />
+          <div className="">
+            <div className="xl:text-xl 2xl:text-2xl p-5">
+              Announcements & Updates Here
+            </div>
+            <div className="text-xs 2xl:text-base px-5">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+              Vestibulum nec ligula quis quam bibendum rhoncus. Nulla tinc idunt
+            </div>
+            <a
+              href="https://arkhet.com"
+              target="_blank"
+              className="text-[#D2B1FD] px-5 absolute bottom-2 right-1 2xl:bottom-7 2xl:right-3"
+            >
+              Learn More
+            </a>
+          </div>
+        </div>
+        <div className="relative border border-[#373541] rounded-lg flex mx-2">
+          <img
+            src={annoucements2}
+            alt=""
+            className="xl:w-[300px] 2xl:w-[100%] 2xl:h-auto"
+          />
+          <div className="">
+            <div className="xl:text-xl 2xl:text-2xl p-5">
+              Discover new product features
+            </div>
+            <div className="text-xs 2xl:text-base px-5">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+              Vestibulum nec ligula quis quam bibendum rhoncus. Nulla tinc idunt
+            </div>
+            <a
+              href="https://arkhet.com"
+              target="_blank"
+              className="text-[#D2B1FD] px-5 absolute bottom-2 right-1 2xl:bottom-7 2xl:right-3"
+            >
+              Learn More
+            </a>
+          </div>
+        </div>
+      </div>
       {loadingProject && (
         <div className="absolute top-[40%] left-[45%] text-2xl text-white font-bold z-[999]">
           LOADING...
@@ -138,11 +190,31 @@ function Dashboard() {
               {allProjectsData
                 .filter((project) => project.active)
                 .map((project, index) => (
-                  <Project project={project} key={index} />
+                  <Project
+                    project={project}
+                    key={index}
+                    showDeleted={showDeleted}
+                    setShowDeleted={setShowDeleted}
+                    animateOut={animateOut}
+                    setAnimateOut={setAnimateOut}
+                  />
                 ))}
             </div>
           </>
         ))}
+
+      <div
+        className={`absolute left-[40%] bottom-[0%] bg-black text-xl px-20 py-3 z-[999]
+          transition-transform duration-500 ease-in-out transform ${
+            showDeleted
+              ? "translate-y-[-100px] opacity-100"
+              : animateOut
+                ? "translate-y-[100px]"
+                : "opacity-0"
+          }`}
+      >
+        Project deleted
+      </div>
     </main>
   );
 }

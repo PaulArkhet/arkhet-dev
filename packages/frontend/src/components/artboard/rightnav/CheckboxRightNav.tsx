@@ -173,12 +173,13 @@ export default function CheckboxRightNav(props: { projectId: number }) {
           <input
             className="px-2 bg-transparent"
             value={
-              shapes &&
-              shapes.find(
-                (shape) =>
-                  shape.id === selectedShapeId && shape.type === "checkbox"
-                //@ts-ignore
-              )!.option1
+              (shapes &&
+                shapes.find(
+                  (shape) =>
+                    shape.id === selectedShapeId && shape.type === "checkbox"
+                  //@ts-ignore
+                )?.option1) ||
+              ""
             }
             onChange={(e) => updateOption1(e.target.value)}
           />
@@ -192,12 +193,13 @@ export default function CheckboxRightNav(props: { projectId: number }) {
           <input
             className="px-2 bg-transparent"
             value={
-              shapes &&
-              shapes.find(
-                (shape) =>
-                  shape.id === selectedShapeId && shape.type === "checkbox"
-                //@ts-ignore
-              )!.option2
+              (shapes &&
+                shapes.find(
+                  (shape) =>
+                    shape.id === selectedShapeId && shape.type === "checkbox"
+                  //@ts-ignore
+                )?.option2) ||
+              ""
             }
             onChange={(e) => updateOption2(e.target.value)}
           />

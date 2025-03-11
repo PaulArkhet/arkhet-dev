@@ -162,7 +162,6 @@ export function MultipageHandles(props: {
       console.log(foundPathsFromOriginalShape, permanentPaths);
       // if we find one, delete the old path and proceed as normal
       if (foundPathsFromOriginalShape.length !== 0) {
-        console.log("found:", foundPathsFromOriginalShape);
         foundPathsFromOriginalShape.map((path) => {
           deletePermanentPath({
             projectId: props.projectId,
@@ -325,6 +324,7 @@ export function MultipageHandles(props: {
           )}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
+          onMouseUp={(e) => handleClick(e, "left")}
           onMouseDown={(e) => handleClick(e, "left")}
         />
       </div>
@@ -337,6 +337,7 @@ export function MultipageHandles(props: {
           )}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
+          onMouseUp={(e) => handleClick(e, "right")}
           onMouseDown={(e) => handleClick(e, "right")}
         />
       </div>
@@ -349,6 +350,7 @@ export function MultipageHandles(props: {
           )}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
+          onMouseUp={(e) => handleClick(e, "bottom")}
           onMouseDown={(e) => handleClick(e, "bottom")}
         />
       </div>

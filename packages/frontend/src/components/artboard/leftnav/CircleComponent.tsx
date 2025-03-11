@@ -37,7 +37,9 @@ export default function CircleComponent({
         <HoverCardTrigger>
           <button>
             <div className="h-[20px] w-[20px] bg-white rounded-full mx-auto" />
-            <p className="text-xs pt-5 pb-4">Circle</p>
+            <p className="text-xs pt-5 pb-4">
+              Circ<span className="font-bold">l</span>e
+            </p>
           </button>
         </HoverCardTrigger>
         <HoverCardContent
@@ -45,7 +47,8 @@ export default function CircleComponent({
           sideOffset={-40}
         >
           <p className="text-xs">
-            Press <span className="text-sm font-bold">c</span> to add a circle
+            Press <span className="text-sm font-extrabold">l</span> to add a
+            circle
           </p>
         </HoverCardContent>
       </HoverCard>

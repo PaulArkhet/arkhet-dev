@@ -46,16 +46,14 @@ export default function PageRightNav(props: { projectId: number }) {
   function updatePageType(subtype: string) {
     if (!pageComponent) return;
     let newWidth;
-    let newHeight;
+    let newHeight = 562;
 
     if (subtype === "Desktop") {
-      newWidth = 800;
-      newHeight = 448;
+      newWidth = 1000;
     } else {
-      newWidth = 448;
-      newHeight = 800;
-    }
-
+      newWidth = 461; 
+    } 
+    
     handleUpdateShape({
       shapeId: pageComponent.id,
       args: {

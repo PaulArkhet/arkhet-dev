@@ -367,7 +367,7 @@ export function Artboard() {
       if (event.key === "v") {
         setIsHandToolActive(false);
       }
-      if (event.key === "r" && !event.ctrlKey) {
+      if (event.key === "p" && !event.ctrlKey) {
         handleAddShape({
           type: "page",
           canvasRef,
@@ -394,7 +394,43 @@ export function Artboard() {
           shapeId: v4(),
         });
       }
-      if (event.key === "c" && !event.ctrlKey) {
+      if (event.key === "x" && !event.ctrlKey) {
+        handleAddShape({
+          type: "checkbox",
+          canvasRef,
+          scale: view!.scale,
+          projectId: project.projectId,
+          shapeId: v4(),
+        });
+      }
+      if (event.key === "r" && !event.ctrlKey) {
+        handleAddShape({
+          type: "radio",
+          canvasRef,
+          scale: view!.scale,
+          projectId: project.projectId,
+          shapeId: v4(),
+        });
+      }
+      if (event.key === "g" && !event.ctrlKey) {
+        handleAddShape({
+          type: "toggle",
+          canvasRef,
+          scale: view!.scale,
+          projectId: project.projectId,
+          shapeId: v4(),
+        });
+      }
+      if (event.key === "d" && !event.ctrlKey) {
+        handleAddShape({
+          type: "divider",
+          canvasRef,
+          scale: view!.scale,
+          projectId: project.projectId,
+          shapeId: v4(),
+        });
+      }
+      if (event.key === "l" && !event.ctrlKey) {
         handleAddShape({
           type: "circle",
           canvasRef,
@@ -403,9 +439,27 @@ export function Artboard() {
           shapeId: v4(),
         });
       }
-      if (event.key === "i" && !event.ctrlKey) {
+      if (event.key === "c" && !event.ctrlKey) {
+        handleAddShape({
+          type: "rectangle",
+          canvasRef,
+          scale: view!.scale,
+          projectId: project.projectId,
+          shapeId: v4(),
+        });
+      }
+      if (event.key === "f" && !event.ctrlKey) {
         handleAddShape({
           type: "inputField",
+          canvasRef,
+          scale: view!.scale,
+          projectId: project.projectId,
+          shapeId: v4(),
+        });
+      }
+      if (event.key === "i" && !event.ctrlKey) {
+        handleAddShape({
+          type: "image",
           canvasRef,
           scale: view!.scale,
           projectId: project.projectId,

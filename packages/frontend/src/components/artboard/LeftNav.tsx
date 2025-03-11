@@ -180,7 +180,9 @@ export default function LeftNav(props: {
           <div className="text-xl py-5 font-bold">Delete For Eternity</div>
           <div className="">
             You are about to permanently delete{" "}
-            <span className="text-[#D2B1FD]">{props.project.title}</span>
+            <span className="text-[#D2B1FD]">
+              prototype version {currentPrototype?.prototypeId}
+            </span>
             . This <br /> prototype will be gone forever.
           </div>
           <div className="mx-auto py-2">

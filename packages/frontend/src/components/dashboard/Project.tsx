@@ -2,7 +2,7 @@ import imageDelete from "/imagedelete.png";
 import trashIcon from "/icontrash.png";
 import { Link } from "@tanstack/react-router";
 import { formatDistanceToNow } from "date-fns";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import type { Project } from "@backend/db/schemas/projects";
 import {
   useDeleteProjectMutation,
@@ -35,12 +35,19 @@ export async function handleUpdateTitle(
   setShowMenu(false);
 }
 
-export default function Project(props: { project: Project }) {
+export default function Project(props: {
+  project: Project;
+  showDeleted: boolean;
+  setShowDeleted: Dispatch<SetStateAction<boolean>>;
+  animateOut: boolean;
+  setAnimateOut: Dispatch<SetStateAction<boolean>>;
+}) {
   const [showOverlay, setShowOverlay] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [deleteMode, setDeleteMode] = useState(false);
   const [projectTitle, setProjectTitle] = useState(props.project.title);
+  const { showDeleted, setShowDeleted, animateOut, setAnimateOut } = props;
 
   const { mutate: updateProject, isPending: mutateProjectPending } =
     useUpdateProjectMutation();
@@ -56,28 +63,17 @@ export default function Project(props: { project: Project }) {
     setShowMenu(!showMenu);
   }
 
-  //   async function handleUpdateTitle(e: React.FormEvent<HTMLFormElement>) {
-  //     e.preventDefault();
-  //     if (mutateProjectPending) return;
-
-  //     updateProject({
-  //       title: projectTitle,
-  //       active: true,
-  //       projectId: props.project.projectId,
-  //     });
-  //     setEditMode(false);
-  //     setShowMenu(false);
-  //   }
-
   async function handleDeleteProject(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (deleteProjectPending) return;
 
     deleteProject(props.project.projectId);
-
+    setShowDeleted(true);
     setDeleteMode(false);
     setEditMode(false);
     setShowMenu(false);
+    setTimeout(() => setAnimateOut(true), 1500);
+    setTimeout(() => setShowDeleted(false), 2000);
   }
 
   return (
@@ -206,7 +202,7 @@ export default function Project(props: { project: Project }) {
       )}
       {showOverlay && (
         <div
-          className="absolute right-3 top-3 p-2 hover:opacity-80 animate-in fade-in"
+          className="absolute right-0 top-0 p-5 hover:opacity-80 animate-in fade-in"
           onClick={toggleMenu}
         >
           <svg

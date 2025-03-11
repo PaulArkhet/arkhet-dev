@@ -35,7 +35,7 @@ export default function InputFieldComponent({
     >
       <HoverCard openDelay={400} closeDelay={0}>
         <HoverCardTrigger>
-          <button className="flex flex-col items-center justify-center">
+          <button className="flex flex-col items-center justify-center pt-1">
             <svg
               width="46"
               height="17"
@@ -45,7 +45,9 @@ export default function InputFieldComponent({
             >
               <rect width="46" height="17" rx="3" fill="currentColor" />
             </svg>
-            <p className="text-xs pt-5 pb-2">Input Field</p>
+            <p className="text-xs pt-5 pb-2">
+              Input <span className="font-bold">F</span>ield
+            </p>
           </button>
         </HoverCardTrigger>
         <HoverCardContent
@@ -53,7 +55,7 @@ export default function InputFieldComponent({
           sideOffset={-40}
         >
           <p className="text-xs">
-            Press <span className="text-sm font-bold">i</span> to add a input
+            Press <span className="text-sm font-bold">f</span> to add a input
             field
           </p>
         </HoverCardContent>

@@ -94,7 +94,7 @@ export function DragAndDropComponent(props: {
     setTemporaryOffset,
     temporaryOffset,
   } = useArtboardStore((state) => state);
-
+  
   const [isEditable, setIsEditable] = useState(false);
   const artboardTree = useMemo(() => {
     return setupArtboardTree(initialShapesBeforeEdit, handleUpdateShape);
@@ -198,7 +198,7 @@ export function DragAndDropComponent(props: {
         width: shape.width,
         height: shape.height,
       }}
-      disableDragging={isHandToolActive}
+      disableDragging={!draggingEnabled || isHandToolActive}
       minHeight={shape.minHeight}
       bounds={props.canvasRef.current ? props.canvasRef.current : "parent"}
       onResizeStart={() => {
@@ -322,6 +322,14 @@ export function DragAndDropComponent(props: {
         data-description={shape.type === "page" ? shape.description : undefined}
         onMouseDown={(e) => {
           if (e.detail !== 2) setSelectedShapeId(shape.id); // Prevents interference with double-click
+        }}
+        onMouseUp={(e) => {
+          if (shape.id !== selectedShapeId) {
+            // for dragging path segments between different MultipageHandles, handles the "release" of dragging
+            // we need to set the selected shape id to the shape that is being dragged over
+            // so that the path is drawn from the correct shape
+            setSelectedShapeId(shape.id);
+          }
         }}
         onDoubleClick={(e) => {
           if (shape.type === "button" || shape.type === "text") {

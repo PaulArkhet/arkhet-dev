@@ -14,6 +14,7 @@ export const prototypes = pgTable("prototypes", {
   projectId: integer("project_id")
     .references(() => projectsTable.projectId, { onDelete: "cascade" })
     .notNull(),
+  title: varchar("title"),
   sourceCode: varchar("source_code").notNull(),
   thumbnailImg: varchar("thumbnail_img"),
   createdAt: timestamp("created_at").defaultNow().notNull(),

@@ -15,7 +15,7 @@ export const Route = createRootRouteWithContext<RouterContext>()({
 });
 
 const TanStackRouterDevtools =
-  process.env.NODE_ENV === "production"
+  import.meta.env.MODE === "production"
     ? () => null
     : React.lazy(() =>
         import("@tanstack/router-devtools").then((res) => ({

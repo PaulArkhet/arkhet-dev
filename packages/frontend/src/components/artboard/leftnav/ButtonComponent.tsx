@@ -53,7 +53,9 @@ export default function ButtonComponent({
             >
               <rect width="46" height="17" rx="3" fill="currentColor" />
             </svg>
-            <p className="text-xs pt-5 pb-2">Button</p>
+            <p className="text-xs pt-5 pb-2">
+              <span className="font-extrabold">B</span>utton
+            </p>
           </button>
         </HoverCardTrigger>
         <HoverCardContent

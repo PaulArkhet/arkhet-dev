@@ -171,3 +171,27 @@ export const useDeletePrototypeMutation = () => {
     },
   });
 };
+
+type UpdatePrototypeTitleArgs = ArgumentTypes<typeof updateFunc>[0]["json"] & {
+  prototypeId: number;
+};
+
+async function updatePrototypeTitle(args: UpdatePrototypeTitleArgs) {
+  const res = await client.api.v0.prototypes.title[":prototypeId"].update.$post(
+    {
+      param: { prototypeId: args.prototypeId.toString() },
+      json: args,
+    }
+  );
+  if (!res.ok) {
+    throw new Error("Error updating prototype title.");
+  }
+  const { newPrototype } = await res.json();
+  return newPrototype;
+}
+
+export const useUpdatePrototypeTitleMutation = () => {
+  return useMutation({
+    mutationFn: updatePrototypeTitle,
+  });
+};

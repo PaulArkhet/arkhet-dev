@@ -137,7 +137,7 @@ function DesignSystem() {
       </div>
       <main className="flex">
         <div className="flex flex-col flex-wrap basis-4/5">
-          <div className="px-10 ml-10 mt-10 flex justify-between items-center">
+          <div className="px-10 mt-10 flex justify-between items-center">
             <div className="flex w-full max-w-sm items-center space-x-2">
               <Input
                 className="border-none tracking-[.25em]"
@@ -177,7 +177,7 @@ function DesignSystem() {
             </div>
           </div>
           <Divider hrOption="border-zinc-700" divOption="py-1" />
-          <div className="px-5 ml-10 mt-10">
+          <div className="px-2 ml-2 2xl:px-3 2xl:ml-4 mt-10">
             <div className="section-styling" ref={sections.color}>
               <div className="w-40">
                 <h1 className="text-white text-sm tracking-[.20em] font-semibold">
@@ -309,7 +309,7 @@ function DesignSystem() {
                 setCustomizationToggle(false);
                 setButtonType("");
               }}
-              className="section-styling"
+              className="gap-3 pb-16 flex flex-row"
               ref={sections.internalNavigation}
             >
               <div className="w-40">
@@ -317,26 +317,27 @@ function DesignSystem() {
                   NAVIGATION
                 </h1>
               </div>
-
-              <div>
-                <h1 className="text-white text-sm tracking-[.20em] font-semibold mb-5">
-                  INTERNAL NAVIGATION
-                </h1>
-                {loading.internalNavigation ? (
-                  <SkeletonComponent type="internalNavigation" />
-                ) : (
-                  <InternalNavigationSection />
-                )}
-              </div>
-              <div ref={sections.segmentedButton}>
-                <h1 className="text-white text-sm tracking-[.20em] font-semibold mb-5">
-                  SEGMENTED BUTTON
-                </h1>
-                {loading.segmentedButton ? (
-                  <SkeletonComponent type="segmentedButton" />
-                ) : (
-                  <SegmentedButtonSection />
-                )}
+              <div className="gap-3 pb-16 xl:flex xl:flex-row">
+                <div>
+                  <h1 className="text-white text-sm tracking-[.20em] font-semibold mb-5">
+                    INTERNAL NAVIGATION
+                  </h1>
+                  {loading.internalNavigation ? (
+                    <SkeletonComponent type="internalNavigation" />
+                  ) : (
+                    <InternalNavigationSection />
+                  )}
+                </div>
+                <div ref={sections.segmentedButton}>
+                  <h1 className="text-white text-sm tracking-[.20em] font-semibold mb-5">
+                    SEGMENTED BUTTON
+                  </h1>
+                  {loading.segmentedButton ? (
+                    <SkeletonComponent type="segmentedButton" />
+                  ) : (
+                    <SegmentedButtonSection />
+                  )}
+                </div>
               </div>
             </div>
 

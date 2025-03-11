@@ -94,34 +94,56 @@ export const prototypeRouter = new Hono()
       return c.json({ newProt: newProt[0] }, 200);
     }
   )
+  .post("/:prototypeId/delete", async (c) => {
+    const { prototypeId: prototypeIdString } = c.req.param();
+    const prototypeId = assertIsParsableInt(prototypeIdString);
+    const { result: newProt, error: prototypeDeletionError } = await mightFail(
+      db
+        .update(prototypesTable)
+        .set({ active: false })
+        .where(eq(prototypesTable.prototypeId, prototypeId))
+        .returning()
+    );
+
+    if (prototypeDeletionError) {
+      throw new HTTPException(400, {
+        cause: prototypeDeletionError,
+        message: "Error deleting prototype.",
+      });
+    }
+
+    return c.json({ projectId: newProt[0].projectId }, 200);
+  })
   .post(
-    "/:prototypeId/delete",
+    "/title/:prototypeId/update",
     zValidator(
       "json",
-      createInsertSchema(prototypesTable).omit({
+      createUpdateSchema(prototypesTable).omit({
+        active: true,
+        projectId: true,
+        sourceCode: true,
+        createdAt: true,
         prototypeId: true,
       })
     ),
     async (c) => {
       const { prototypeId: prototypeIdString } = c.req.param();
       const prototypeId = assertIsParsableInt(prototypeIdString);
-      const { result: newProt, error: prototypeDeletionError } =
-        await mightFail(
-          db
-            .update(prototypesTable)
-            .set({ active: false })
-            .where(eq(prototypesTable.prototypeId, prototypeId))
-            .returning()
-        );
-
-      if (prototypeDeletionError) {
-        throw new HTTPException(400, {
-          cause: prototypeDeletionError,
-          message: "Error creating prototype.",
+      const updateValues = c.req.valid("json");
+      const { error: queryError, result: newPrototypeResult } = await mightFail(
+        db
+          .update(prototypesTable)
+          .set({ ...updateValues })
+          .where(eq(prototypesTable.prototypeId, prototypeId))
+          .returning()
+      );
+      if (queryError) {
+        throw new HTTPException(500, {
+          message: "Error updating prototypes table",
+          cause: queryError,
         });
       }
-
-      return c.json({ newProt }, 200);
+      return c.json({ newPrototype: newPrototypeResult[0] }, 200);
     }
   )
   .post(

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import ellipsis from "/iconellipsis.svg";
 import toggleOff from "/icontoggleoff.svg";
 import plusgrey from "/iconplusgrey.svg";
@@ -22,6 +22,14 @@ export default function RadioRightNav(props: { projectId: number }) {
     getAllShapesForProjectQueryOptions(props.projectId)
   );
 
+  const radioComponent = shapes?.find(shape => shape.id === selectedShapeId && shape.type === "radio");
+  
+  // Check if shapes is undefined or empty or component was not selected
+  if (!shapes || !radioComponent) return;
+
+  const radioWireframeComponent = (radioComponent as Extract<Wireframe, { type: "radio" }>);
+
+
   function toggleShowRadioLayouts() {
     setShowRadioLayouts(!showRadioLayouts);
   }
@@ -34,14 +42,7 @@ export default function RadioRightNav(props: { projectId: number }) {
   //   setShowDescription(!showDescription);
   // }
 
-  function updateLayout(orientation: string) {
-    if (!shapes) return;
-
-    const radioComponent = shapes.find(
-      (shape) => shape.id === selectedShapeId && shape.type === "radio"
-    );
-
-    if (!radioComponent) return;
+  const updateLayout = (orientation: string) => {
     handleUpdateShape({
       shapeId: radioComponent.id,
       args: {
@@ -51,15 +52,7 @@ export default function RadioRightNav(props: { projectId: number }) {
     });
   }
 
-  function updateLabel(content: string) {
-    if (!shapes) return;
-
-    const radioComponent = shapes.find(
-      (shape) => shape.id === selectedShapeId && shape.type === "radio"
-    );
-
-    if (!radioComponent) return;
-
+  const updateLabel = (content: string) => {
     handleUpdateShape({
       shapeId: radioComponent.id,
       args: {
@@ -87,15 +80,7 @@ export default function RadioRightNav(props: { projectId: number }) {
   //  });
   //}
 
-  function updateOption(content: string, index: number) {
-    if (!shapes) return;
-
-    const radioComponent = shapes.find(
-      (shape) => shape.id === selectedShapeId && shape.type === "radio"
-    );
-
-    if (!radioComponent) return;
-
+  const updateOption = (content: string, index: number) => {
     handleUpdateShape({
       shapeId: radioComponent.id,
       args: {
@@ -104,14 +89,6 @@ export default function RadioRightNav(props: { projectId: number }) {
       },
     });
   }
-
-  console.log(
-    shapes,
-    shapes &&
-      (shapes.find(
-        (shape) => shape.id === selectedShapeId && shape.type === "radio"
-      ) as Extract<Wireframe, { type: "radio" }>)
-  );
 
   return (
     <div>
@@ -169,15 +146,7 @@ export default function RadioRightNav(props: { projectId: number }) {
               <input type="radio" />
               <input
                 className="px-2 bg-transparent"
-                value={
-                  shapes &&
-                  (
-                    shapes.find(
-                      (shape) =>
-                        shape.id === selectedShapeId && shape.type === "radio"
-                    ) as Extract<Wireframe, { type: "radio" }>
-                  ).option1
-                }
+                value={radioWireframeComponent.option1}
                 onChange={(e) => updateOption(e.target.value, 1)}
               />
             </div>
@@ -185,15 +154,7 @@ export default function RadioRightNav(props: { projectId: number }) {
               <input type="radio" />
               <input
                 className="px-2 bg-transparent"
-                value={
-                  shapes &&
-                  (
-                    shapes.find(
-                      (shape) =>
-                        shape.id === selectedShapeId && shape.type === "radio"
-                    ) as Extract<Wireframe, { type: "radio" }>
-                  ).option2
-                }
+                value={radioWireframeComponent.option2}
                 onChange={(e) => updateOption(e.target.value, 2)}
               />
             </div>
@@ -201,15 +162,7 @@ export default function RadioRightNav(props: { projectId: number }) {
               <input type="radio" />
               <input
                 className="px-2 bg-transparent"
-                value={
-                  shapes &&
-                  (
-                    shapes.find(
-                      (shape) =>
-                        shape.id === selectedShapeId && shape.type === "radio"
-                    ) as Extract<Wireframe, { type: "radio" }>
-                  ).option3
-                }
+                value={radioWireframeComponent.option3}
                 onChange={(e) => updateOption(e.target.value, 3)}
               />
             </div>
