@@ -215,7 +215,7 @@ function DesignSystem() {
             <div className="relative z-20 text-center pb-10 text-xl text-[#BF94F7]">
               Coming Soon
             </div>
-            <div className="absolute top-[1000px] left-0 z-10 w-full bg-black opacity-50 h-[1290px]"></div>
+            {/* <div className="absolute top-[1000px] left-0 z-10 w-full bg-black opacity-50 h-[1290px]"></div> */}
             <div ref={sections.buttons} className="section-styling">
               <div className="w-40">
                 <h1 className="text-white text-sm tracking-[.20em] font-semibold">
