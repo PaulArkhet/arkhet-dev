@@ -31,14 +31,19 @@ export function DragAndDropIframe(props: {
   const { code: initialCode, socket, isHandToolActive, canvasRef } = props;
   const view = useContext(ViewContext);
   const divRef = useRef<HTMLDivElement>(null);
-  const { currentPrototype, setIsPrototypeReady, isPrototypeReady } =
-    prototypeStore(
-      useShallow((state) => ({
-        currentPrototype: state.currentPrototype,
-        setIsPrototypeReady: state.setIsPrototypeReady,
-        isPrototypeReady: state.isPrototypeReady,
-      }))
-    );
+  const {
+    currentPrototype,
+    setCurrentPrototype,
+    setIsPrototypeReady,
+    isPrototypeReady,
+  } = prototypeStore(
+    useShallow((state) => ({
+      currentPrototype: state.currentPrototype,
+      setCurrentPrototype: state.setCurrentPrototype,
+      setIsPrototypeReady: state.setIsPrototypeReady,
+      isPrototypeReady: state.isPrototypeReady,
+    }))
+  );
 
   const { data: prototypesQuery } = useQuery(
     getPrototypesByProjectIdQueryOptions(props.projectId)
@@ -65,15 +70,18 @@ export function DragAndDropIframe(props: {
     if (!currentPrototype) return console.log("no curr prototype!");
     console.log("setting:", code.code);
     if (updatePrototypePending) return;
-    updatePrototype({
-      param: {
-        prototypeId: currentPrototype.prototypeId.toString(),
+    updatePrototype(
+      {
+        param: {
+          prototypeId: currentPrototype.prototypeId.toString(),
+        },
+        json: {
+          sourceCode: code.code,
+          thumbnailImg: "",
+        },
       },
-      json: {
-        sourceCode: code.code,
-        thumbnailImg: "",
-      },
-    });
+      { onSuccess: (newPrototype) => setCurrentPrototype(newPrototype) }
+    );
   }
 
   useEffect(() => {

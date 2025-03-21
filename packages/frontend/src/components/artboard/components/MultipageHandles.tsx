@@ -1,7 +1,7 @@
 import useArtboardStore, { TemporaryPath } from "@/store/ArtboardStore";
 import { Wireframe, PermanentPath } from "@backend/src/interfaces/artboard";
 import { HandleType } from "@backend/src/interfaces/artboard";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { twMerge } from "tailwind-merge";
 import { findOrthogonalPath } from "@/lib/orthogonal-finder";
 import {
@@ -18,7 +18,7 @@ import {
 } from "@/lib/api/multipage-paths";
 import { useQuery } from "@tanstack/react-query";
 import { getAllShapesForProjectQueryOptions } from "@/lib/api/shapes";
-
+import { useUpdateShapeMutation } from "@/lib/api/shapes";
 export function getMultipageHandlePoint(args: {
   handle: HandleType;
   xOffset: number;
@@ -51,6 +51,7 @@ export function MultipageHandles(props: {
   shape: Wireframe;
   mousePos: { x: number; y: number };
   projectId: number;
+  isEditable?: boolean;
 }) {
   const { data: shapes } = useQuery(
     getAllShapesForProjectQueryOptions(props.projectId)
@@ -69,6 +70,10 @@ export function MultipageHandles(props: {
   } = useQuery(getMultipagePathsQueryOptions({ projectId: props.projectId }));
   const { mutate: createPermanentPath } = useCreateMultipagePathMutation();
   const { mutate: deletePermanentPath } = useDeleteMultipagePathMutation();
+
+  // For updating a checkbox when the [+] button is clicked
+  const { mutate: handleUpdateShape } = useUpdateShapeMutation(props.projectId);
+  const [isAddCheckboxOptionHover, setIsAddCheckboxOptionHover] = useState(false);
 
   const pages = useMemo(
     () => shapes.filter((shape) => shape.type === "page"),
@@ -290,6 +295,25 @@ export function MultipageHandles(props: {
     });
   }, [props.mousePos, selectedHandle, props.shape, pages]);
 
+  const handleAddCheckboxOption = useCallback(() => {
+    if (props.shape.type !== "checkbox") return;
+
+    handleUpdateShape({
+      shapeId: props.shape.id,
+      args: {
+        type: "checkbox",
+        options: [
+          ...props.shape.options,
+          {
+            optionId: uuid(),
+            label: `Item ${props.shape.options.length + 1}`,
+            isTicked: false,
+          },
+        ],
+      },
+    });
+  }, [props.shape, handleUpdateShape]);
+
   /*
    * Need to create a series of divs to model the arrow
    * we can have:
@@ -301,12 +325,13 @@ export function MultipageHandles(props: {
    * */
 
   return (
-    <>
+    // Ensures that the handles are not clickable when the shape is in it's editing mode
+    <div className={`${props.isEditable ? "pointer-events-none" : ""}`}> 
       {/* top */}
       <div className="absolute w-full top-0 left-0 flex flex-row justify-center">
         <div
           className={twMerge(
-            "relative bottom-5 w-3 h-3 bg-white border-[#42A5F5] rounded-full border-[3px] hover:cursor-pointer hover:bg-[#42A5F5] multipage-handle top z-20",
+            `relative bottom-5 ${props.shape.type === "checkbox" ? "translate-y-[-24px]" : ""} w-[11px] h-[11px] border-white bg-[#42A5F5] rounded-full border hover:cursor-pointer hover:border-[#42A5F5] multipage-handle top z-20 transition-colors`,
             selectedHandle === "top" ? "bg-[#42A5F5]" : ""
           )}
           onMouseEnter={handleMouseEnter}
@@ -319,7 +344,7 @@ export function MultipageHandles(props: {
       <div className="absolute h-full top-0 left-0 flex flex-col justify-center">
         <div
           className={twMerge(
-            "relative right-5 w-3 h-3 bg-white border-[#42A5F5] rounded-full border-[3px] hover:cursor-pointer hover:bg-[#42A5F5] multipage-handle",
+            `relative right-5 ${props.shape.type === "checkbox" ? "translate-x-[-24px]" : ""} w-[11px] h-[11px] border-white bg-[#42A5F5] rounded-full border hover:cursor-pointer hover:border-[#42A5F5] multipage-handle transition-colors`,
             selectedHandle === "left" ? "bg-[#42A5F5]" : ""
           )}
           onMouseEnter={handleMouseEnter}
@@ -332,7 +357,7 @@ export function MultipageHandles(props: {
       <div className="absolute h-full bottom-0 right-0 flex flex-col justify-center">
         <div
           className={twMerge(
-            "relative left-5 w-3 h-3 bg-white border-[#42A5F5] rounded-full border-[3px] hover:cursor-pointer hover:bg-[#42A5F5] multipage-handle",
+            `relative left-5 ${props.shape.type === "checkbox" ? "translate-x-[24px]" : ""} w-[11px] h-[11px] border-white bg-[#42A5F5] rounded-full border hover:cursor-pointer hover:border-[#42A5F5] multipage-handle transition-colors`,
             selectedHandle === "right" ? "bg-[#42A5F5]" : ""
           )}
           onMouseEnter={handleMouseEnter}
@@ -340,12 +365,20 @@ export function MultipageHandles(props: {
           onMouseUp={(e) => handleClick(e, "right")}
           onMouseDown={(e) => handleClick(e, "right")}
         />
+        {props.shape.type === "checkbox" && props.shape.subtype === "horizontal" && (
+          <div className="absolute right-[-27px] hover:cursor-pointer" onClick={handleAddCheckboxOption}>
+            <svg width="20" height="33" viewBox="0 0 20 33" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="10" cy="17" r="10" fill={`#42A5F5`}/>
+              <path d="M9.096 23.04V18.168H4.344V16.056H9.096V11.328H11.304V16.056H16.056V18.168H11.304V23.04H9.096Z" fill="white"/>
+            </svg>
+          </div>
+        )}
       </div>
       {/* bottom */}
       <div className="absolute w-full bottom-0 left-0 flex flex-row justify-center">
         <div
           className={twMerge(
-            "relative top-5 w-3 h-3 bg-white border-[#42A5F5] rounded-full border-[3px] hover:cursor-pointer hover:bg-[#42A5F5] multipage-handle",
+            `relative top-5 ${props.shape.type === "checkbox" ? "translate-y-[24px]" : ""} w-[11px] h-[11px] border-white bg-[#42A5F5] rounded-full border hover:cursor-pointer hover:border-[#42A5F5] multipage-handle transition-colors`,
             selectedHandle === "bottom" ? "bg-[#42A5F5]" : ""
           )}
           onMouseEnter={handleMouseEnter}
@@ -353,7 +386,15 @@ export function MultipageHandles(props: {
           onMouseUp={(e) => handleClick(e, "bottom")}
           onMouseDown={(e) => handleClick(e, "bottom")}
         />
+        {props.shape.type === "checkbox" && props.shape.subtype === "column" && (
+          <div className="absolute bottom-[-27px] hover:cursor-pointer" onMouseEnter={() => setIsAddCheckboxOptionHover(true)} onMouseLeave={() => setIsAddCheckboxOptionHover(false)} onClick={handleAddCheckboxOption}>
+            <svg width="20" height="20" viewBox="0 0 20 33" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="10" cy="17" r="10" fill={`${isAddCheckboxOptionHover ? "#86C9FF" : "#42A5F5"}`} />
+              <path d="M9.096 23.04V18.168H4.344V16.056H9.096V11.328H11.304V16.056H16.056V18.168H11.304V23.04H9.096Z" fill="white"/>
+            </svg>
+          </div>
+        )}
       </div>
-    </>
+    </div>
   );
 }

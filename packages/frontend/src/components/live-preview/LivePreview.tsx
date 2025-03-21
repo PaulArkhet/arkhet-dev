@@ -80,6 +80,7 @@ export function transpileCode(code: string, id: number) {
                 <meta charset="UTF-8" />
                 <title>Live Preview</title>
                 <style>body { font-family: Arial, sans-serif; padding: 0; margin: 0; }</style>
+                <script src="https://cdn.tailwindcss.com"></script>
                 <meta HTTP-EQUIV="Access-Control-Allow-Origin" content="https://unpkg.com">
               </head>
               <body>

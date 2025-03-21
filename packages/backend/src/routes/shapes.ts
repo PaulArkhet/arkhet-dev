@@ -1,38 +1,39 @@
-import { Hono } from 'hono';
-import { db } from '../../db/db';
-import { getUser } from '../services/kinde.service';
-import { assertIsParsableInt } from './projects';
-import { HTTPException } from 'hono/http-exception';
-import { mightFail } from 'might-fail';
-import { eq } from 'drizzle-orm';
+import { Hono } from "hono";
+import { db } from "../../db/db";
+import { getUser } from "../services/kinde.service";
+import { assertIsParsableInt } from "./projects";
+import { HTTPException } from "hono/http-exception";
+import { mightFail } from "might-fail";
+import { eq, and } from "drizzle-orm";
 
 import {
   cardChildren,
   shapes as shapesTable,
-} from '../../db/schemas/shapes/shapes';
-import { pageShapes } from '../../db/schemas/shapes/shapes';
-import { buttonShapes } from '../../db/schemas/shapes/shapes';
-import { inputFieldShapes } from '../../db/schemas/shapes/shapes';
-import { textShapes } from '../../db/schemas/shapes/shapes';
-import { checkboxShapes } from '../../db/schemas/shapes/shapes';
-import { radioShapes } from '../../db/schemas/shapes/shapes';
-import { toggleShapes } from '../../db/schemas/shapes/shapes';
-import { cardShapes } from '../../db/schemas/shapes/shapes';
-import { imageShapes } from '../../db/schemas/shapes/shapes';
-import { dropdownShapes } from '../../db/schemas/shapes/shapes';
-import { circleShapes } from '../../db/schemas/shapes/shapes';
-import { chatbotShapes } from '../../db/schemas/shapes/shapes';
-import { dividerShapes } from '../../db/schemas/shapes/shapes';
-import { navigationShapes } from '../../db/schemas/shapes/shapes';
-import { instanceShapes } from '../../db/schemas/shapes/shapes';
-import { rectangleShapes } from '../../db/schemas/shapes/shapes';
-import { zValidator } from '@hono/zod-validator';
+} from "../../db/schemas/shapes/shapes";
+import { pageShapes } from "../../db/schemas/shapes/shapes";
+import { buttonShapes } from "../../db/schemas/shapes/shapes";
+import { inputFieldShapes } from "../../db/schemas/shapes/shapes";
+import { textShapes } from "../../db/schemas/shapes/shapes";
+import { checkboxShapes } from "../../db/schemas/shapes/shapes";
+import { radioShapes } from "../../db/schemas/shapes/shapes";
+import { toggleShapes } from "../../db/schemas/shapes/shapes";
+import { cardShapes } from "../../db/schemas/shapes/shapes";
+import { imageShapes } from "../../db/schemas/shapes/shapes";
+import { dropdownShapes } from "../../db/schemas/shapes/shapes";
+import { circleShapes } from "../../db/schemas/shapes/shapes";
+import { chatbotShapes } from "../../db/schemas/shapes/shapes";
+import { dividerShapes } from "../../db/schemas/shapes/shapes";
+import { navigationShapes } from "../../db/schemas/shapes/shapes";
+import { instanceShapes } from "../../db/schemas/shapes/shapes";
+import { rectangleShapes } from "../../db/schemas/shapes/shapes";
+import { checkboxOptions } from "../../db/schemas/shapes/shapes";
+import { zValidator } from "@hono/zod-validator";
 import {
   wireframeSchemaItemInsert,
   wireframeSchemaItemPartial,
   type Wireframe,
-} from '../interfaces/artboard';
-import { createSelectSchema } from 'drizzle-zod';
+} from "../interfaces/artboard";
+import { createSelectSchema } from "drizzle-zod";
 
 const shapeSchemaMapping = {
   page: { schema: createSelectSchema(pageShapes), table: pageShapes },
@@ -78,9 +79,16 @@ async function getChildrenIdsForCard(cardId: string) {
     .where(eq(cardChildren.cardId, cardId));
 }
 
+async function getCheckboxOptionsForShape(shapeId: string) {
+  return await db
+    .select()
+    .from(checkboxOptions)
+    .where(eq(checkboxOptions.shapeId, shapeId));
+}
+
 export const shapesRouter = new Hono()
   .use(getUser)
-  .get('/:projectId', async (c) => {
+  .get("/:projectId", async (c) => {
     const { projectId: projectIdString } = c.req.param();
     const projectId = assertIsParsableInt(projectIdString);
 
@@ -134,7 +142,7 @@ export const shapesRouter = new Hono()
 
     if (queryError) {
       throw new HTTPException(500, {
-        message: 'Error when querying shapes.',
+        message: "Error when querying shapes.",
         cause: queryError,
       });
     }
@@ -144,7 +152,7 @@ export const shapesRouter = new Hono()
         const type = rawShape.base.type;
         if (rawShape[type] === null) {
           console.error(
-            'Shape type does not match with queried result, filtering invalid shape out.'
+            "Shape type does not match with queried result, filtering invalid shape out."
           );
           return false;
         }
@@ -155,18 +163,29 @@ export const shapesRouter = new Hono()
         if (rawShape[type] === null) {
           console.error(rawShape);
           console.error(type);
-          throw new Error('This should never occur.');
+          throw new Error("This should never occur.");
         }
         const parsedShape = {
           ...rawShape.base,
           ...rawShape[type],
         } as Wireframe;
 
-        if (type === 'card') {
+        if (type === "card") {
           const children = await mightFail(
             getChildrenIdsForCard(rawShape.base.id)
           );
           return { ...parsedShape, children };
+        }
+
+        if (type === "checkbox") {
+          const { result: options, error: optionsError } = await mightFail(
+            getCheckboxOptionsForShape(rawShape.base.id)
+          );
+          if (optionsError) {
+            console.error("Error fetching checkbox options:", optionsError);
+            return parsedShape;
+          }
+          return { ...parsedShape, options };
         }
 
         return parsedShape;
@@ -177,12 +196,12 @@ export const shapesRouter = new Hono()
     return c.json({ parsedShapesQueryResult: result }, 200);
   })
   .post(
-    '/create',
-    zValidator('json', wireframeSchemaItemInsert, (result) => {
+    "/create",
+    zValidator("json", wireframeSchemaItemInsert, (result) => {
       if (!result.success) console.error(result.error);
     }),
     async (c) => {
-      const shapeProps = c.req.valid('json');
+      const shapeProps = c.req.valid("json");
 
       const result = await db.transaction(async (trx) => {
         const { error: baseShapeCreateError, result: baseShape } =
@@ -195,7 +214,7 @@ export const shapesRouter = new Hono()
           console.log(shapeProps);
           trx.rollback();
           throw new HTTPException(500, {
-            message: 'Error when creating base shape.',
+            message: "Error when creating base shape.",
             cause: baseShapeCreateError,
           });
         }
@@ -213,21 +232,51 @@ export const shapesRouter = new Hono()
         if (extraShapeCreateError) {
           trx.rollback();
           throw new HTTPException(500, {
-            message: 'Error when creating extra shape',
+            message: "Error when creating extra shape",
             cause: extraShapeCreateError,
           });
         }
+
+        if (shapeProps.type === "checkbox" && shapeProps.options) {
+          const optionsToCreate = shapeProps.options.map((option) => ({
+            id: option.optionId,
+            shapeId: baseShape[0].id,
+            optionId: option.optionId,
+            label: option.label,
+            isTicked: option.isTicked,
+            order: option.order,
+          }));
+
+          const { error: optionsCreateError } = await mightFail(
+            trx.insert(checkboxOptions).values(optionsToCreate)
+          );
+
+          if (optionsCreateError) {
+            trx.rollback();
+            throw new HTTPException(500, {
+              message: "Error when creating checkbox options",
+              cause: optionsCreateError,
+            });
+          }
+
+          return {
+            ...baseShape[0],
+            ...extraShapeProps[0],
+            options: optionsToCreate,
+          } as Wireframe;
+        }
+
         return { ...baseShape[0], ...extraShapeProps[0] } as Wireframe;
       });
       return c.json({ success: true, shape: result }, 200);
     }
   )
   .post(
-    '/:shapeId/update',
-    zValidator('json', wireframeSchemaItemPartial),
+    "/:shapeId/update",
+    zValidator("json", wireframeSchemaItemPartial),
     async (c) => {
       const { shapeId } = c.req.param();
-      const shapeProps = c.req.valid('json');
+      const shapeProps = c.req.valid("json");
 
       const result = await db.transaction(async (trx) => {
         const { error: baseShapesUpdateError, result: baseShape } =
@@ -242,7 +291,7 @@ export const shapesRouter = new Hono()
         if (baseShapesUpdateError) {
           trx.rollback();
           throw new HTTPException(500, {
-            message: 'Error when updating base shape properties',
+            message: "Error when updating base shape properties",
             cause: baseShapesUpdateError,
           });
         }
@@ -264,12 +313,12 @@ export const shapesRouter = new Hono()
         if (extraShapesUpdateError) {
           trx.rollback();
           throw new HTTPException(500, {
-            message: 'Error when updating extra shape properties',
+            message: "Error when updating extra shape properties",
             cause: extraShapesUpdateError,
           });
         }
 
-        if (shapeProps.type === 'card' && shapeProps.childrenComponents) {
+        if (shapeProps.type === "card" && shapeProps.childrenComponents) {
           const childrenIds = new Set(
             (await getChildrenIdsForCard(shapeId)).map(({ childId }) => childId)
           );
@@ -295,7 +344,7 @@ export const shapesRouter = new Hono()
           if (!noErrorsRemoving) {
             trx.rollback();
             throw new HTTPException(500, {
-              message: 'Error when removing old child ids from card children.',
+              message: "Error when removing old child ids from card children.",
               cause: extraShapesUpdateError,
             });
           }
@@ -314,9 +363,72 @@ export const shapesRouter = new Hono()
           if (!noErrorsAdding) {
             trx.rollback();
             throw new HTTPException(500, {
-              message: 'Error when adding new child ids from card children.',
+              message: "Error when adding new child ids from card children.",
               cause: extraShapesUpdateError,
             });
+          }
+        }
+
+        if (shapeProps.type === "checkbox" && shapeProps.options) {
+          // Get existing options
+          const existingOptions = await trx
+            .select()
+            .from(checkboxOptions)
+            .where(eq(checkboxOptions.shapeId, shapeId));
+
+          const existingOptionsMap = new Map(
+            existingOptions.map((opt) => [opt.optionId, opt])
+          );
+
+          // Track operations that were changed throughout
+          const optionsToUpdate = [];
+          const optionsToInsert = [];
+
+          for (const option of shapeProps.options) {
+            const existingOption = existingOptionsMap.get(option.optionId!);
+
+            if (existingOption) {
+              if (
+                existingOption.label !== option.label ||
+                existingOption.isTicked !== option.isTicked
+              ) {
+                optionsToUpdate.push({
+                  optionId: option.optionId!,
+                  label: option.label!,
+                  isTicked: option.isTicked || false,
+                });
+              }
+            } else {
+              optionsToInsert.push({
+                id: option.optionId!,
+                shapeId: shapeId,
+                optionId: option.optionId!,
+                label: option.label!,
+                isTicked: option.isTicked || false,
+              });
+            }
+          }
+
+          if (optionsToUpdate.length > 0) {
+            for (const option of optionsToUpdate) {
+              await mightFail(
+                trx
+                  .update(checkboxOptions)
+                  .set(option)
+                  .where(
+                    and(
+                      eq(checkboxOptions.shapeId, shapeId),
+                      eq(checkboxOptions.optionId, option.optionId)
+                    )
+                  )
+              );
+            }
+          }
+
+          if (optionsToInsert.length > 0) {
+            for (const option of optionsToInsert) {
+              await mightFail(trx.insert(checkboxOptions).values(option));
+            }
           }
         }
       });
@@ -326,7 +438,7 @@ export const shapesRouter = new Hono()
       return c.json({ success: true }, 200);
     }
   )
-  .post('/:shapeId/delete', async (c) => {
+  .post("/:shapeId/delete", async (c) => {
     const { shapeId } = c.req.param();
 
     const { error } = await mightFail(
@@ -335,7 +447,7 @@ export const shapesRouter = new Hono()
 
     if (error) {
       throw new HTTPException(500, {
-        message: 'Error when deleting shape.',
+        message: "Error when deleting shape.",
         cause: error,
       });
     }

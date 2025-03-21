@@ -40,6 +40,11 @@ export type ArtboardState = {
   };
   wrapperRef: React.RefObject<HTMLDivElement> | null;
   setWrapperRef: (ref: React.RefObject<HTMLDivElement>) => void;
+  selectedShapeIds: string[];
+  setSelectedShapeIds: (ids: string[]) => void;
+  addSelectedShapeId: (id: string) => void;
+  removeSelectedShapeId: (id: string) => void;
+  clearSelection: () => void;
 };
 
 export type TemporaryPath = {
@@ -102,6 +107,19 @@ const useArtboardStore = create<ArtboardState>((set, get) => ({
   temporaryOffset: null,
   wrapperRef: null,
   setWrapperRef: (ref) => set({ wrapperRef: ref }),
+  selectedShapeIds: [],
+  setSelectedShapeIds: (ids: string[]) => set({ selectedShapeIds: ids }),
+  addSelectedShapeId: (id: string) =>
+    set((state) => ({
+      selectedShapeIds: [...new Set([...state.selectedShapeIds, id])],
+    })),
+  removeSelectedShapeId: (id: string) =>
+    set((state) => ({
+      selectedShapeIds: state.selectedShapeIds.filter(
+        (shapeId) => shapeId !== id
+      ),
+    })),
+  clearSelection: () => set({ selectedShapeIds: [] }),
 }));
 
 export default useArtboardStore;

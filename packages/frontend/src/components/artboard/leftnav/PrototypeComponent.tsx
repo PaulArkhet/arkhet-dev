@@ -2,6 +2,7 @@ import { Prototype } from "@backend/db/schemas/prototypes";
 import ellipsis from "/iconellipsisvertical.svg";
 import { useState } from "react";
 import { useUpdatePrototypeTitleMutation } from "@/lib/api/prototypes";
+import debounce from "lodash/debounce";
 
 export default function PrototypeComponent(props: {
   index: number;
@@ -18,26 +19,28 @@ export default function PrototypeComponent(props: {
     handleContextMenu,
   } = props;
   const [showEllipsis, setShowEllipsis] = useState(false);
-  const [prototypeTitle, setPrototypeTitle] = useState(
-    currentPrototype.title
-      ? currentPrototype.title
-      : "Version " + currentPrototype.prototypeId
-  );
   const [editMode, setEditMode] = useState(false);
   const {
     mutate: updatePrototypeTitle,
     isPending: mutatePrototypeTitlePending,
   } = useUpdatePrototypeTitleMutation();
 
-  function handleUpdateTitle(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
+  const debouncedUpdateShape = debounce((updateProps) => {
+    handleUpdateTitle();
+  }, 300);
 
+  function handleUpdateTitle() {
     if (mutatePrototypeTitlePending) return;
-    updatePrototypeTitle({
-      title: prototypeTitle,
-      prototypeId: currentPrototype.prototypeId,
-    });
   }
+
+  const debouncedUpdateTitle = debounce(
+    (text: string) =>
+      updatePrototypeTitle({
+        title: text,
+        prototypeId: currentPrototype.prototypeId,
+      }),
+    300
+  );
 
   return (
     <li
@@ -58,15 +61,24 @@ export default function PrototypeComponent(props: {
         setEditMode(false);
       }}
     >
-      {!editMode && <span>Version {prototype.prototypeId}</span>}
+      {!editMode && (
+        <span>
+          {prototype.title
+            ? prototype.title
+            : "Version " + prototype.prototypeId}
+        </span>
+      )}
       {editMode && (
         <form onSubmit={handleUpdateTitle}>
           <input
-            value={prototypeTitle || ""}
-            onChange={(e) => setPrototypeTitle(e.target.value)}
+            defaultValue={""}
+            onChange={(e) => {
+              if (e.target.value === "") return;
+              debouncedUpdateTitle(e.target.value);
+            }}
             className="bg-transparent text-white outline-none"
           />
-          <button className="hidden pr-2">Update</button>
+          <button className="hidden">Update</button>
         </form>
       )}
       {prototype.prototypeId === currentPrototype?.prototypeId ? (

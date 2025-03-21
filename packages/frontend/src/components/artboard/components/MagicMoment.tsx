@@ -28,6 +28,8 @@ export default function MagicMoment(props: { socket: Socket }) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   async function handleNotificationEvent(notification: NotificationItem) {
+    if (notification.title === "Generation finished!") {
+    }
     addNotification(notification, setNotificationItems, setNeedsUpdate);
   }
 
@@ -47,29 +49,30 @@ export default function MagicMoment(props: { socket: Socket }) {
   }, [notificationItems.length]);
 
   return (
-    <div className="arkhet-cursor">
-      <div className="pt-[150px] text-center text-4xl font-bold">
-        Your prototype is being generated...
-      </div>
-      <div className="text-center pt-5">
-        You may switch to another tab or minimize this window. <br />
-        Do not close your browser tab or your work will be lost.
-      </div>
-      <div className="flex flex-col pt-16 w-[700px] mx-auto">
-        <div className="text-xl pb-5 font-bold">Generation history</div>
-        <div className="bg-[#242424] p-5">
-          <div
-            ref={containerRef}
-            className="mx-auto h-[300px] overflow-y-auto "
-            onWheel={(event) => event.stopPropagation()}
-          >
-            {notificationItems.map((item) => (
-              <div className="py-2">
-                <h3 className="font-semibold text-lg">{item.title}</h3>
-                <p className="leading-5">{item.body}</p>
-              </div>
-            ))}
-            {/* {Array(20)
+    <div className="arkhet-cursor flex flex-row items-center justify-center">
+      <div className="relative top-[100px]">
+        <div className="text-center text-4xl font-bold">
+          Your prototype is being generated...
+        </div>
+        <div className="text-center pt-5">
+          You may switch to another tab or minimize this window. <br />
+          Do not close your browser tab or your work will be lost.
+        </div>
+        <div className="flex flex-col pt-6 w-[600px] mx-auto">
+          <div className="text-xl pb-5 font-bold">Generation history</div>
+          <div className="bg-[#242424] p-5">
+            <div
+              ref={containerRef}
+              className="mx-auto h-[300px] overflow-y-auto"
+              onWheel={(event) => event.stopPropagation()}
+            >
+              {notificationItems.map((item) => (
+                <div className="py-2">
+                  <h3 className="font-semibold text-lg">{item.title}</h3>
+                  <p className="leading-5">{item.body}</p>
+                </div>
+              ))}
+              {/* {Array(20)
             .fill("")
             .map((_, idx) => {
               let bgColor = "#666666"; // Default color
@@ -90,6 +93,7 @@ export default function MagicMoment(props: { socket: Socket }) {
                 ></div>
               );
             })} */}
+            </div>
           </div>
         </div>
       </div>

@@ -280,7 +280,7 @@ function getDimensionPropsForShape(type: ShapeVariations["type"]): {
       .with("page", () => ({
         width: 1000, // 800 * 2
         height: 562, // 448 * 2
-        minWidth: 1000,
+        minWidth: 461,
         minHeight: 562,
         maxWidth: 1000,
       }))
@@ -449,8 +449,22 @@ function getDefaultShapeProps<T extends ShapeVariations["type"]>(
         ...baseProps,
         subtype: "column",
         label: "",
-        option1: "I Accept",
-        option2: "I Understand",
+        options: [
+          {
+            optionId: uuid(),
+            shapeId: newShapeId,
+            label: "Item 1",
+            isTicked: false,
+            order: 0,
+          },
+          {
+            optionId: uuid(),
+            shapeId: newShapeId,
+            label: "Item 2",
+            isTicked: false,
+            order: 1,
+          },
+        ],
         type: "checkbox",
       };
       shape = checkbox;
@@ -529,6 +543,7 @@ function getDefaultShapeProps<T extends ShapeVariations["type"]>(
     case "divider": {
       const divider: Extract<Wireframe, { type: "divider" }> = {
         ...baseProps,
+        thickness: 2,
         type: "divider",
       };
       shape = divider;

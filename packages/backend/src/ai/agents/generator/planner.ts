@@ -66,6 +66,108 @@ const prompt = ChatPromptTemplate.fromMessages([
        - If any of these criteria are not met, a new plan should be created to resolve these issues.
      </arkhet_planner_end_generation_acceptance_criteria>
 
+     <plan_examples>
+      **Wireframe Description:**  
+      The low-fidelity wireframe shows a top header with the application title, a prominent call-to-action button, and a horizontal navigation bar. The main content area is divided into sections for dynamic content and an interactive cart component. (Note: No comments on the color scheme are provided, as colors in the wireframe are only placeholders.)
+
+      #### User Story 1: Landing Page Overview
+      - **As a** user  
+        **I want** to see a clearly structured landing page  
+        **So that** I understand the app’s purpose and can easily navigate to key features.
+        
+        **Acceptance Criteria:**  
+        - The landing page includes a header component displaying the app title in a prominent manner.  
+        - A primary call-to-action button is rendered using the preexisting <Button /> component, styled per the styleguide.  
+        - The page layout follows the 60/30/10 rule for dominant, secondary, and accent elements.  
+        - All styles are applied inline, with the code written in TypeScript within a single TSX file.  
+        - No ESLint errors are present.
+
+      #### User Story 2: Navigation Functionality
+      - **As a** user  
+        **I want** to navigate between different pages seamlessly  
+        **So that** I can interact with various sections of the application without full page reloads.
+        
+        **Acceptance Criteria:**  
+        - Navigation is handled via a top-level Layout component that uses React.useState for stateful, mocked navigation.  
+        - Each page is assigned a unique ID based on the given page structure.  
+        - Navigation updates are performed through conditional rendering, ensuring that the page structure is correctly reflected.  
+        - The navigation implementation is free of ESLint errors.
+
+      #### User Story 3: Interactive Cart Component
+      - **As a** user  
+        **I want** to add items to a shopping cart  
+        **So that** I can review my selections before moving to checkout.
+        
+        **Acceptance Criteria:**  
+        - The cart component accurately updates its state when items are added or removed.  
+        - "Add to Cart" buttons utilize the <Button /> component and follow inline style guidelines.  
+        - The component behavior aligns with realistic interactions—displaying updated item counts and totals—with all interactions verified to be error-free in ESLint.  
+        - All interactive text is realistic and not placeholder.
+
+      #### User Story 4: <App /> Component Integrity
+      - **As a** developer  
+        **I want** the <App /> component to properly initialize the application  
+        **So that** it serves as a reliable entry point for all subsequent navigation and interactions.
+        
+        **Acceptance Criteria:**  
+        - The <App /> component sets up the topmost Layout component and properly integrates all subcomponents within the same TSX file.  
+        - Navigation logic is reviewed against the page structure, ensuring that each unique page ID is correctly mapped.  
+        - The implementation is confirmed to have no ESLint errors.  
+        - The component structure reflects the low-fidelity wireframe’s layout and interaction design.
+
+      ---
+
+      ### Example Plan 2: Extended Navigation and Interactive Components
+
+      **Wireframe Description:**  
+      The wireframe presents a split-screen design with a sidebar navigation menu on the left and a main content area on the right. The layout includes interactive sections such as a user profile area and a dynamic content feed, with clear segmentation of components.
+
+      #### User Story 1: Sidebar Navigation Menu
+      - **As a** user  
+        **I want** to use a sidebar navigation menu  
+        **So that** I can quickly access different sections of the application.
+        
+        **Acceptance Criteria:**  
+        - The sidebar displays a list of menu items that correspond to unique page IDs from the given page structure.  
+        - Clicking a sidebar item updates the main content area through state management using React.useState.  
+        - All styling is applied inline and adheres to the styleguide’s color palette and layout rules.  
+        - The sidebar navigation is fully functional with no ESLint errors.
+
+      #### User Story 2: Dynamic Content Feed
+      - **As a** user  
+        **I want** to view a dynamic content feed that updates based on my interactions  
+        **So that** I always see the latest information without manual page refreshes.
+        
+        **Acceptance Criteria:**  
+        - The main content area displays dynamic content sections that refresh when a different category is selected from the sidebar.  
+        - All interactive elements, including buttons and content areas, are styled with inline styles and use existing components where applicable.  
+        - The dynamic updates are managed through React state and show realistic text content.  
+        - The implementation is validated with no ESLint issues.
+
+      #### User Story 3: User Profile Component
+      - **As a** user  
+        **I want** to view and update my profile information  
+        **So that** I can maintain accurate personal details within the application.
+        
+        **Acceptance Criteria:**  
+        - A user profile component is available within the main content area that displays realistic, non-placeholder user information.  
+        - Profile updates (e.g., editing name, email) are clearly delineated by interactive elements, even though code examples are not provided.  
+        - All actions are styled inline and conform to the styleguide.  
+        - The profile component integrates seamlessly with the overall page structure and is free from ESLint errors.
+
+      #### User Story 4: Consistency of the <App /> Component
+      - **As a** developer  
+        **I want** the <App /> component to remain the reliable entry point  
+        **So that** it initializes and ties together the sidebar, content feed, and profile components consistently.
+        
+        **Acceptance Criteria:**  
+        - The <App /> component is responsible for assembling the Layout component that manages the sidebar and main content area.  
+        - It ensures that the navigation state and unique page IDs are correctly managed according to the provided routing info.  
+        - The component is verified to be free from ESLint errors, with all interactions fully tested.  
+        - The structure adheres strictly to the low-fidelity wireframe’s design, ensuring a coherent and complete prototype.
+
+     </plan_examples>
+
    </arkhet_planner_info>
   </arkhet_info>
 
@@ -90,7 +192,7 @@ function getAllTools(state: typeof State.State) {
 }
 
 const reasonLLM = new BedrockChat({
-  model: 'us.anthropic.claude-3-7-sonnet-20250219-v1:0',
+  model: 'anthropic.claude-3-5-sonnet-20241022-v2:0',
   region: process.env.BEDROCK_AWS_REGION,
   credentials: {
     accessKeyId: process.env.BEDROCK_AWS_ACCESS_KEY!,

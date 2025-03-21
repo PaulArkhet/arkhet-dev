@@ -65,14 +65,21 @@ export function useTriggerGeneration(
   async function handleCreatePrototype() {
     // return;
     if (isPending) return;
+    const versionNumber =
+      (getPrototypesQueryData !== undefined &&
+        getPrototypesQueryData.length > 0 &&
+        getPrototypesQueryData.reduce((latest, prototype) =>
+          prototype.createdAt > latest.createdAt ? prototype : latest
+        ).prototypeId + 1) ||
+      "0";
     const newPrototype = await createPrototype({
       projectId: project?.projectId || 0,
       sourceCode: "",
       thumbnailImg: "",
-      title: "Version " + getPrototypesQueryData?.length || "0",
+      title: "Version " + versionNumber,
     });
+    console.log(newPrototype);
     if (newPrototype) {
-      console.log("Setting prototype to:", newPrototype);
       setCurrentPrototype(newPrototype);
       setIsPrototypeReady(false);
     }

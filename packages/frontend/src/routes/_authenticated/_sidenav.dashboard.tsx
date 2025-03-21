@@ -86,7 +86,7 @@ function Dashboard() {
 
   return (
     <main className="relative w-full">
-      <div className="flex p-2 my-10">
+      {/* <div className="flex p-2 my-10">
         <div className="relative border border-[#373541] rounded-lg flex mx-2">
           <img
             src={annoucements1}
@@ -133,7 +133,7 @@ function Dashboard() {
             </a>
           </div>
         </div>
-      </div>
+      </div> */}
       {loadingProject && (
         <div className="absolute top-[40%] left-[45%] text-2xl text-white font-bold z-[999]">
           LOADING...

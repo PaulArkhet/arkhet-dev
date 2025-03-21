@@ -1,5 +1,5 @@
 import type { Request, Response } from 'express';
-import { runApp } from '../ai/langgraph';
+// import { runApp } from '../ai/langgraph';
 import { z } from 'zod';
 import path from 'path';
 import { Server, Socket } from 'socket.io';
@@ -13,6 +13,7 @@ import {
 import fs from 'fs';
 import { styleGuideAi } from '../ai/langchain-styleguide';
 import { styleguideSelectParser } from '../services/styleguide.service';
+import { runQStarGeneration } from '../ai/q-star/qStarGenerate';
 
 const pageStructureSchema = z.object({
   id: z.string(),
@@ -41,7 +42,9 @@ export async function startGeneration(params: GenParams, socket: Socket) {
   console.log(params);
   console.time(socket.id);
   const startTime = performance.now();
-  await runApp(params.pageStructure, socket, params);
+  // await runApp(params.pageStructure, socket, params);
+  //await runTraining(socket, params);
+  await runQStarGeneration(socket, params);
   const endTime = performance.now();
 
   socket.emit('notification', {

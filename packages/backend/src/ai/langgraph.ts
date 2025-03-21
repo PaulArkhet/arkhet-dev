@@ -26,13 +26,6 @@ export type Pages = {
   path?: string;
 }[];
 
-export const ReactFunctionSchema = z.object({
-  name: z.string(),
-  parameters: z.string(),
-  returnType: z.string().optional(),
-  definition: z.string(),
-});
-
 export const sleep = (ms: number): Promise<void> => {
   console.log(`sleeping ${ms}ms`);
 
@@ -176,21 +169,51 @@ const workflow = new StateGraph(State)
 
 const app = workflow.compile();
 
-type ReactFunction = z.infer<typeof ReactFunctionSchema>;
+export const ReactFunctionSchema = z.object({
+  name: z.string(),
+  parameters: z.string(),
+  returnType: z.string().optional(),
+  definition: z.string(),
+});
 
-export type CodeModel = { functions: ReactFunction[]; mainCode: string };
+export type ReactFunction = z.infer<typeof ReactFunctionSchema>;
 
-export function codeModelToString(model: CodeModel) {
+// New schema for top-level type definitions.
+export const TopLevelTypeSchema = z.object({
+  name: z.string(),
+  definition: z
+    .string()
+    .describe(
+      'The definition for the type. This can be an interface or type alias declaration (without the "type" keyword, which will be added).'
+    ),
+});
+
+export type TopLevelType = z.infer<typeof TopLevelTypeSchema>;
+
+// Updated CodeModel now holds types in addition to functions.
+export type CodeModel = {
+  types: TopLevelType[];
+  functions: ReactFunction[];
+  mainCode: string;
+};
+
+// Updated stringifier: types are output first at the top, then functions, then main code.
+export function codeModelToString(model: CodeModel): string {
+  const typeStrings = model.types.map(
+    (typeDef) => `type ${typeDef.name} = ${typeDef.definition};`
+  );
+
   const functionStrings = model.functions.map((functionDef) => {
-    let functionString = `function ${functionDef.name}(${functionDef.parameters})${functionDef.returnType ? `: ${functionDef.returnType}` : ''} {
+    let functionString =
+      `function ${functionDef.name}(${functionDef.parameters})` +
+      `${functionDef.returnType ? `: ${functionDef.returnType}` : ''} {
   ${functionDef.definition}
 }`;
     return functionString;
   });
 
-  let allFuncs = functionStrings.join('\n\n');
-  allFuncs += `\n\n ${model.mainCode}`;
-  return allFuncs;
+  const allParts = [...typeStrings, ...functionStrings, model.mainCode];
+  return allParts.join('\n\n');
 }
 
 export async function runApp(
@@ -212,6 +235,7 @@ export async function runApp(
     messages: [],
     pageScreenshot: { message: null },
     model: {
+      types: [],
       functions: [
         {
           name: 'App',

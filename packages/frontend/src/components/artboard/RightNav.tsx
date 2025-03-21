@@ -23,6 +23,7 @@ import InputRightNav from "./rightnav/InputRightNav";
 import TextRightNav from "./rightnav/TextRightNav";
 import ImageRightNav from "./rightnav/ImageRightNav";
 import CardRightNav from "./rightnav/CardRightNav";
+import DividerRightNav from "./rightnav/DividerRightNav";
 import { useQuery } from "@tanstack/react-query";
 import { useCreatePrototypeMutation } from "@/lib/api/prototypes";
 import { useTriggerGeneration } from "./TopNav";
@@ -107,6 +108,9 @@ export default function RightNav({
       case "card":
         return <CardRightNav projectId={project.projectId} />;
 
+      case "divider":
+          return <DividerRightNav projectId={project.projectId}/>;
+
       default:
         return null;
     }
@@ -144,9 +148,7 @@ export default function RightNav({
               fill="currentColor"
             />
           </svg>
-          <div className="text-sm tracking-widest mb-[1px]">
-            VIEW PROTOTYPES
-          </div>
+          <div className="text-sm tracking-widest my-[1px]">VIEW PROTOTYPE</div>
         </a>
         {pageContent === "Interaction" && (
           <div

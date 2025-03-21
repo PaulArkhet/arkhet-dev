@@ -10,7 +10,7 @@ import {
   HoverCardContent,
 } from "@/components/ui/hover-card";
 
-export default function DividerComponentt({
+export default function DividerComponent({
   canvasRef,
   projectId,
 }: ComponentProps) {

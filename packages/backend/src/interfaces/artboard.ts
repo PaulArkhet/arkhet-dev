@@ -16,6 +16,7 @@ import { dividerShapes } from '../../db/schemas/shapes/shapes';
 import { navigationShapes } from '../../db/schemas/shapes/shapes';
 import { instanceShapes } from '../../db/schemas/shapes/shapes';
 import { rectangleShapes } from '../../db/schemas/shapes/shapes';
+import { checkboxOptions } from '../../db/schemas/shapes/shapes';
 import { z } from 'zod';
 import type {
   handleTypeArray,
@@ -39,7 +40,13 @@ const shapeVariationsSchema = z.discriminatedUnion('type', [
     .merge(createSelectSchema(inputFieldShapes)),
   z
     .object({ type: z.literal('checkbox') })
-    .merge(createSelectSchema(checkboxShapes)),
+    .merge(createSelectSchema(checkboxShapes).merge(
+      z.object({
+          options: z.array(createSelectSchema(checkboxOptions)),
+        })
+      )
+    )
+    .omit({ shapeId: true }),
   z.object({ type: z.literal('radio') }).merge(createSelectSchema(radioShapes)),
   z
     .object({ type: z.literal('toggle') })
@@ -94,7 +101,13 @@ const shapeVariationsSchemaPartial = z.discriminatedUnion('type', [
     .omit({ shapeId: true }),
   z
     .object({ type: z.literal('checkbox') })
-    .merge(createUpdateSchema(checkboxShapes))
+    .merge(
+      createUpdateSchema(checkboxShapes).merge(
+        z.object({
+          options: z.array(createUpdateSchema(checkboxOptions)).optional(),
+        }),
+      )
+    )
     .omit({ shapeId: true }),
   z
     .object({ type: z.literal('radio') })
@@ -166,7 +179,13 @@ const shapeVariationsSchemaInsert = z.discriminatedUnion('type', [
     .omit({ shapeId: true }),
   z
     .object({ type: z.literal('checkbox') })
-    .merge(createInsertSchema(checkboxShapes))
+    .merge(
+      createInsertSchema(checkboxShapes).merge(
+        z.object({
+          options: z.array(createInsertSchema(checkboxOptions)),
+        }),
+      )
+    )
     .omit({ shapeId: true }),
   z
     .object({ type: z.literal('radio') })

@@ -148,32 +148,35 @@ function DesignSystem() {
                 }}
               />
             </div>
-            <div className="px-4 py-1 text-sm rounded-3xl border border-purple-500 text-purple-500 text-center justify-center hover:cursor-pointer flex flex-row gap-1">
-              <div>
-                <svg
-                  width="16"
-                  height="19"
-                  viewBox="0 0 16 19"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M3.42857 0C1.53571 0 0 1.53571 0 3.42857V14.8571C0 16.75 1.53571 18.2857 3.42857 18.2857H13.7143H14.8571C15.4893 18.2857 16 17.775 16 17.1429C16 16.5107 15.4893 16 14.8571 16V13.7143C15.4893 13.7143 16 13.2036 16 12.5714V1.14286C16 0.510714 15.4893 0 14.8571 0H13.7143H3.42857ZM3.42857 13.7143H12.5714V16H3.42857C2.79643 16 2.28571 15.4893 2.28571 14.8571C2.28571 14.225 2.79643 13.7143 3.42857 13.7143ZM4.57143 5.14286C4.57143 4.82857 4.82857 4.57143 5.14286 4.57143H12C12.3143 4.57143 12.5714 4.82857 12.5714 5.14286C12.5714 5.45714 12.3143 5.71429 12 5.71429H5.14286C4.82857 5.71429 4.57143 5.45714 4.57143 5.14286ZM5.14286 6.85714H12C12.3143 6.85714 12.5714 7.11429 12.5714 7.42857C12.5714 7.74286 12.3143 8 12 8H5.14286C4.82857 8 4.57143 7.74286 4.57143 7.42857C4.57143 7.11429 4.82857 6.85714 5.14286 6.85714Z"
-                    fill="#9253E4"
-                  />
-                </svg>
-              </div>
+            <div>
+              <div className="text-purple-500 text-center">Coming Soon</div>
+              <div className="px-4 py-1 text-sm rounded-3xl border border-[#666666] text-[#666666] text-center justify-center hover:cursor-pointer flex flex-row gap-1">
+                <div>
+                  <svg
+                    width="16"
+                    height="19"
+                    viewBox="0 0 16 19"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M3.42857 0C1.53571 0 0 1.53571 0 3.42857V14.8571C0 16.75 1.53571 18.2857 3.42857 18.2857H13.7143H14.8571C15.4893 18.2857 16 17.775 16 17.1429C16 16.5107 15.4893 16 14.8571 16V13.7143C15.4893 13.7143 16 13.2036 16 12.5714V1.14286C16 0.510714 15.4893 0 14.8571 0H13.7143H3.42857ZM3.42857 13.7143H12.5714V16H3.42857C2.79643 16 2.28571 15.4893 2.28571 14.8571C2.28571 14.225 2.79643 13.7143 3.42857 13.7143ZM4.57143 5.14286C4.57143 4.82857 4.82857 4.57143 5.14286 4.57143H12C12.3143 4.57143 12.5714 4.82857 12.5714 5.14286C12.5714 5.45714 12.3143 5.71429 12 5.71429H5.14286C4.82857 5.71429 4.57143 5.45714 4.57143 5.14286ZM5.14286 6.85714H12C12.3143 6.85714 12.5714 7.11429 12.5714 7.42857C12.5714 7.74286 12.3143 8 12 8H5.14286C4.82857 8 4.57143 7.74286 4.57143 7.42857C4.57143 7.11429 4.82857 6.85714 5.14286 6.85714Z"
+                      fill="#666666"
+                    />
+                  </svg>
+                </div>
 
-              <label htmlFor="fileUpload" className="cursor-pointer">
-                Upload Design System
-              </label>
-              <input
-                id="fileUpload"
-                type="file"
-                accept="image/png, image/jpg, image/jpeg"
-                onChange={handleUploadClick}
-                className="hidden"
-              />
+                <label htmlFor="fileUpload" className="">
+                  Upload Design System
+                </label>
+                {/* <input
+                  id="fileUpload"
+                  type="file"
+                  accept="image/png, image/jpg, image/jpeg"
+                  onChange={handleUploadClick}
+                  className="hidden"
+                /> */}
+              </div>
             </div>
           </div>
           <Divider hrOption="border-zinc-700" divOption="py-1" />

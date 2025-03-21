@@ -19,7 +19,7 @@ import TextComponent from "./leftnav/TextComponent";
 import CheckboxComponent from "./leftnav/CheckboxComponent";
 import RadiobuttonComponent from "./leftnav/RadiobuttonComponent";
 import ToggleComponent from "./leftnav/ToggleComponent";
-import DividerComponentt from "./leftnav/DividerComponent";
+import DividerComponent from "./leftnav/DividerComponent";
 import CardComponent from "./leftnav/CardComponent";
 import CircleComponent from "./leftnav/CircleComponent";
 import ImageComponent from "./leftnav/ImageComponent";
@@ -315,7 +315,7 @@ export default function LeftNav(props: {
                       canvasRef={props.canvasRef}
                       projectId={props.project.projectId}
                     />
-                    <DividerComponentt
+                    <DividerComponent
                       canvasRef={props.canvasRef}
                       projectId={props.project.projectId}
                     />

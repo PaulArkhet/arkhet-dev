@@ -99,7 +99,7 @@ async function updatePrototype(args: UpdatePrototypeArgs) {
   }
   const { newPrototype } = await res.json();
   console.log(newPrototype);
-  return newPrototype;
+  return mapSerializedPrototypeToSchema(newPrototype);
 }
 
 export const useUpdatePrototypeMutation = () => {
@@ -191,7 +191,35 @@ async function updatePrototypeTitle(args: UpdatePrototypeTitleArgs) {
 }
 
 export const useUpdatePrototypeTitleMutation = () => {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: updatePrototypeTitle,
+    onMutate: async (args: UpdatePrototypeTitleArgs) => {
+      // Snapshot the previous value
+      const previousPrototypes = queryClient.getQueryData<Prototype[]>([
+        "prototypes",
+      ]);
+
+      // Optimistically update the title for the matching prototype
+      const newPrototypes = previousPrototypes?.map((prototype) =>
+        prototype.prototypeId === args.prototypeId
+          ? { ...prototype, title: args.title }
+          : prototype
+      );
+
+      // Update the cache immediately
+      queryClient.setQueryData(["prototypes"], newPrototypes);
+
+      // Return context with previous data for rollback if needed
+      return { previousPrototypes };
+    },
+    onError: (_error, _args, context) => {
+      if (context?.previousPrototypes) {
+        queryClient.setQueryData(["prototypes"], context.previousPrototypes);
+      }
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["prototypes"] });
+    },
   });
 };

@@ -65,6 +65,7 @@ export function Canvas({
   project,
   handleContextMenu,
   pageContent,
+  isPrototypeReady,
 }: {
   code?: string;
   socket?: Socket;
@@ -81,6 +82,7 @@ export function Canvas({
   project: Project;
   handleContextMenu: (event: React.MouseEvent<HTMLDivElement>) => void;
   pageContent: PageNavigation;
+  isPrototypeReady: boolean;
 }) {
   const viewContext = useContext(ViewContext);
   const [mousePos, setMousePos] = useState({
@@ -146,7 +148,7 @@ export function Canvas({
   return (
     <div
       id="canvas"
-      className={`w-[5000px] h-[5000px] absolute bg-[#2c2c2c] border rounded -top-[1000px] -left-[1000px] z-0 ${pageContent === "Gen UI" && "overflow-hidden"} ${isHandToolActive ? "cursor-grab" : "arkhet-cursor"}`}
+      className={`w-[5000px] h-[5000px] absolute bg-[#2c2c2c] border rounded -top-[1000px] -left-[1000px] z-0 ${pageContent === "Gen UI" && "overflow-hidden"} ${isHandToolActive ? "cursor-grab" : "arkhet-cursor"} ${!isPrototypeReady && "overflow-hidden"}`}
       onMouseDown={handleMouseDown}
       onMouseMove={(args) => {
         handleMouseMove(args);
@@ -157,7 +159,7 @@ export function Canvas({
     >
       <div
         className={twMerge(
-          "w-[5000px] h-[5000px] absolute bg-[#2c2c2c] border rounded -top-[1000px] -left-[1000px] z-0 transition-opacity duration-500",
+          `w-[5000px] h-[5000px] absolute bg-[#2c2c2c] border rounded -top-[1000px] -left-[1000px] z-0 transition-opacity duration-500 ${pageContent === "Gen UI" && "overflow-hidden"}`,
           viewContext && viewContext.scale >= 2 ? "opacity-1" : "opacity-0"
         )}
         style={{

@@ -73,3 +73,35 @@ export const navigateTool = tool(
     }),
   }
 );
+
+export const thinkTool = tool(
+  (input: { think: string }) => {
+    return input.think;
+  },
+  {
+    name: 'think',
+    description:
+      'Call this tool to think and formulate step by step ideas or plans.',
+    schema: z.object({
+      think: z.string().describe('Your thinking step.'),
+    }),
+  }
+);
+
+export const changeFocusedWireframeTool = tool(
+  (input: { id: string }) => {
+    return input.id;
+  },
+  {
+    name: 'changeFocusedWireframe.',
+    description: `
+    Use this tool when you want to see a different wireframe in the app.
+    Pass in the unique id of the wireframe you wish to change the view of.
+    `,
+    schema: z.object({
+      id: z
+        .string()
+        .describe(`The unique ID of the page you're navigating to.`),
+    }),
+  }
+);

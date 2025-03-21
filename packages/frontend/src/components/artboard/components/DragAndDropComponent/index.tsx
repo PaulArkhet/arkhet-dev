@@ -1,11 +1,12 @@
 import {
   MutableRefObject,
+  useCallback,
   useContext,
   useEffect,
   useMemo,
   useState,
 } from "react";
-import useArtboardStore from "../../../store/ArtboardStore";
+import useArtboardStore from "../../../../store/ArtboardStore";
 import { Wireframe } from "@backend/src/interfaces/artboard";
 import imageIcon from "/iconimage.png";
 import { Rnd } from "react-rnd";
@@ -15,13 +16,13 @@ import {
   getBoundsForShape,
   isShapeInPage,
 } from "@/routes/_authenticated/artboard/$projectId";
-import { ViewContext } from "../../zoom/ViewContext";
-import { Switch } from "../../ui/switch";
-import { DragHandles } from "../components/DragHandles";
-import { GRID_SIZE_PIXELS } from "../Canvas";
-import { MultipageHandles } from "./MultipageHandles";
+import { ViewContext } from "../../../zoom/ViewContext";
+import { Switch } from "../../../ui/switch";
+import { DragHandles } from "../DragHandles";
+import { GRID_SIZE_PIXELS } from "../../Canvas";
+import { MultipageHandles } from "../MultipageHandles";
 import { useUpdateShapeMutation } from "@/lib/api/shapes";
-
+import { CheckboxList } from "./CheckboxList";
 export function getNearestGridCoordinate(currentPositionPixels: number) {
   return (
     Math.round(currentPositionPixels / GRID_SIZE_PIXELS) * GRID_SIZE_PIXELS
@@ -48,6 +49,7 @@ export function DragAndDropComponent(props: {
   const [initialShapesBeforeEdit, setShapesBeforeChange] = useState<
     Wireframe[]
   >([]);
+  const [initialPositions, setInitialPositions] = useState(new Map());
   const view = useContext(ViewContext);
   const { mutate: handleUpdateShape } = useUpdateShapeMutation(props.projectId);
   const debouncedUpdateShape = debounce((updateProps) => {
@@ -93,12 +95,36 @@ export function DragAndDropComponent(props: {
     debugPath,
     setTemporaryOffset,
     temporaryOffset,
+    selectedShapeIds,
   } = useArtboardStore((state) => state);
-  
+
   const [isEditable, setIsEditable] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
   const artboardTree = useMemo(() => {
     return setupArtboardTree(initialShapesBeforeEdit, handleUpdateShape);
   }, [initialShapesBeforeEdit]);
+
+  const determineSize = useCallback(() => {
+    if (shape.type === "checkbox") {
+      return {
+        width: "auto",
+        height: "auto",
+      };
+    }
+    return {
+      width: shape.width,
+      height: shape.height,
+    };
+  }, [shape]);
+
+  const determinePadding = useCallback(() => {
+    switch (shape.type) {
+      case "checkbox":
+        return "16px";
+      default:
+        return "0px";
+    }
+  }, [shape]);
 
   function handleUpdateRefList(el: HTMLDivElement) {
     if (!el || !props.pageRefList) return;
@@ -131,13 +157,27 @@ export function DragAndDropComponent(props: {
     allShapesRefList && updateRefList(allShapesRefList);
   }
 
-  const [isHovered, setIsHovered] = useState(false);
+  const handleDragStart = (shapeId: string) => {
+    if (selectedShapeIds.includes(shapeId)) {
+      // Store initial positions for all selected shapes
+      setInitialPositions(
+        new Map(
+          props.shapes
+            .filter((shape) => selectedShapeIds.includes(shape.id))
+            .map((shape) => [shape.id, { x: shape.xOffset, y: shape.yOffset }])
+        )
+      );
+    }
+  };
 
   return (
     <Rnd
       enableUserSelectHack={!isHandToolActive}
       enableResizing={
-        !isHandToolActive && shape.type !== "instance" && !shape.isInstanceChild
+        !isHandToolActive &&
+        shape.type !== "checkbox" &&
+        shape.type !== "instance" &&
+        !shape.isInstanceChild
       }
       scale={view ? view.scale : 1}
       key={shape.id + shape.type}
@@ -149,9 +189,11 @@ export function DragAndDropComponent(props: {
         cursor: isHandToolActive ? "grab" : "arkhet-cursor",
         border:
           (selectedShapeId === shape.id && shape.type !== "page") ||
-          (isHovered && shape.type !== "page")
+          (isHovered && shape.type !== "page") ||
+          selectedShapeIds.includes(shape.id)
             ? "2px solid #70acdc"
             : "2px solid transparent",
+        padding: determinePadding(),
       }}
       resizeHandleComponent={{
         bottomRight: DragHandles({
@@ -194,10 +236,7 @@ export function DragAndDropComponent(props: {
               y: shape.yOffset,
             }
       }
-      size={{
-        width: shape.width,
-        height: shape.height,
-      }}
+      size={determineSize()}
       disableDragging={!draggingEnabled || isHandToolActive}
       minHeight={shape.minHeight}
       bounds={props.canvasRef.current ? props.canvasRef.current : "parent"}
@@ -207,6 +246,7 @@ export function DragAndDropComponent(props: {
       onDragStart={(_, data) => {
         setDragStart({ x: data.x, y: data.y });
         setShapesBeforeChange(props.shapes);
+        handleDragStart(shape.id);
       }}
       onDrag={(_, dragData) => {
         if (props.shape.type === "page" || shape.type === "card") {
@@ -231,6 +271,18 @@ export function DragAndDropComponent(props: {
             yOffset: dragData.y - dragStart.y,
           });
         }
+        if (selectedShapeIds.includes(shape.id) && initialPositions.size > 0) {
+          const deltaX = dragData.x - initialPositions.get(shape.id).x;
+          const deltaY = dragData.y - initialPositions.get(shape.id).y;
+
+          selectedShapeIds.forEach((id) => {
+            const shape = props.shapes.find((s) => s.id === id);
+            if (shape) {
+              shape.xOffset = initialPositions.get(id).x + deltaX;
+              shape.yOffset = initialPositions.get(id).y + deltaY;
+            }
+          });
+        }
       }}
       onDragStop={(_, dragData) => {
         addUndoState(initialShapesBeforeEdit);
@@ -246,7 +298,6 @@ export function DragAndDropComponent(props: {
               yOffset: newY,
             },
           });
-
           if (props.shape.type === "page") {
             setTemporaryOffset(null);
             const ourPage = artboardTree.find(
@@ -272,6 +323,23 @@ export function DragAndDropComponent(props: {
               });
             });
           }
+          selectedShapeIds.forEach((id) => {
+            const shape = props.shapes.find((s) => s.id === id);
+            if (shape) {
+              handleUpdateShape({
+                shapeId: id,
+                args: {
+                  type: shape.type,
+                  xOffset: getNearestGridCoordinate(
+                    initialPositions.get(id).x + newX - dragStart.x
+                  ),
+                  yOffset: getNearestGridCoordinate(
+                    initialPositions.get(id).y + newY - dragStart.y
+                  ),
+                },
+              });
+            }
+          });
         }
       }}
       onResizeStop={(_, direction, ___, resizableDelta) => {
@@ -332,9 +400,13 @@ export function DragAndDropComponent(props: {
           }
         }}
         onDoubleClick={(e) => {
-          if (shape.type === "button" || shape.type === "text") {
-            setIsEditable(true);
-            setSelectedShapeId(shape.id);
+          switch (shape.type) {
+            case "button":
+            case "text":
+            case "checkbox":
+              setIsEditable(true);
+              setSelectedShapeId(shape.id);
+              break;
           }
         }}
       >
@@ -344,6 +416,7 @@ export function DragAndDropComponent(props: {
             mousePos={props.mousePos}
             shape={shape}
             projectId={props.projectId}
+            isEditable={isEditable}
           />
         )}
         {shape.type === "page" &&
@@ -358,6 +431,7 @@ export function DragAndDropComponent(props: {
               mousePos={props.mousePos}
               shape={shape}
               projectId={props.projectId}
+              isEditable={isEditable}
             />
           )}
         {shape.type === "page" ? (
@@ -365,12 +439,9 @@ export function DragAndDropComponent(props: {
             <div
               className={`pb-5 absolute w-full -top-8 left-2 ${
                 selectedShapeId == shape.id ? "text-sky-200" : ""
-              }`}
+              }  ${isHandToolActive ? "cursor-grab" : "arkhet-cursor"}`}
             >
               <input
-                style={{
-                  cursor: isHandToolActive ? "grab" : "arkhet-cursor",
-                }}
                 className="bg-transparent focus:outline-none"
                 defaultValue={shape.title}
                 onChange={(e) => {
@@ -391,8 +462,10 @@ export function DragAndDropComponent(props: {
                   ? "page-focus border border-[#70acdc]"
                   : ""
               }
-              ${view && view.scale >= 2 ? "opacity-50" : "bg-opacity-100"}
+              ${view && view.scale >= 2 ? "opacity-50" : "bg-opacity-100"} ${isHandToolActive ? "cursor-grab" : "arkhet-cursor"}
               `}
+              onMouseEnter={() => setDraggingEnabled(false)}
+              onMouseLeave={() => setDraggingEnabled(true)}
             />
             <input
               className={`bg-transparent focus:outline-none w-full my-2 ${
@@ -451,7 +524,9 @@ export function DragAndDropComponent(props: {
           </div>
         ) : shape.type === "text" ? (
           <div
-            className="w-full h-full"
+            className={`w-full h-full ${
+              isHandToolActive ? "cursor-grab" : "arkhet-cursor"
+            }`}
             onDoubleClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
@@ -524,27 +599,18 @@ export function DragAndDropComponent(props: {
             )}
           </div>
         ) : shape.type === "checkbox" ? (
-          <div className="w-full h-full">
-            <div>{shape.label}</div>
-            {/*<div className="text-xs py-1">{shape.description}</div>  no description.. */}
-            <div className={`${shape.subtype === "horizontal" && "flex"}`}>
-              <div className="flex">
-                <input
-                  readOnly={!isEditable}
-                  type="checkbox"
-                  className=""
-                  defaultChecked
-                />
-                <div className="px-2 text-xs">{shape.option1}</div>
-              </div>
-              <div className="flex">
-                <input readOnly={!isEditable} type="checkbox" className="" />
-                <div className="px-2 text-xs">{shape.option2}</div>
-              </div>
-            </div>
-          </div>
+          <CheckboxList
+            shape={shape}
+            isEditable={isEditable}
+            onSetIsEditable={setIsEditable}
+            projectId={props.projectId}
+          />
         ) : shape.type === "radio" ? (
-          <div className="w-full h-full">
+          <div
+            className={`w-full h-full ${
+              isHandToolActive ? "cursor-grab" : "arkhet-cursor"
+            }`}
+          >
             <div>{shape.label}</div>
             {/*<div className="text-xs py-1">{shape.description}</div>  no description.. */}
             <div className={`flex ${shape.subtype === "column" && "flex-col"}`}>
@@ -563,7 +629,11 @@ export function DragAndDropComponent(props: {
             </div>
           </div>
         ) : shape.type === "image" ? (
-          <div className="w-full h-full bg-[#404040] flex justify-center items-center rounded-xl">
+          <div
+            className={`w-full h-full bg-[#404040] flex justify-center items-center rounded-xl ${
+              isHandToolActive ? "cursor-grab" : "arkhet-cursor"
+            }`}
+          >
             <img src={imageIcon} alt="" className="mx-auto" draggable={false} />
           </div>
         ) : shape.type === "dropdown" ? (
@@ -581,19 +651,23 @@ export function DragAndDropComponent(props: {
             <option value="default2">{shape.option3}</option>
           </select>
         ) : shape.type === "circle" ? (
-          <div className="w-full h-full bg-white rounded-full"></div>
+          <div
+            className={`w-full h-full bg-white rounded-full ${isHandToolActive ? "cursor-grab" : "arkhet-cursor"}`}
+          ></div>
         ) : shape.type === "card" ? (
           <>
             <div
               className={`pb-5 absolute w-full -top-8 left-2 ${
                 selectedShapeId == shape.id ? "text-sky-200" : ""
-              }`}
+              } ${isHandToolActive ? "cursor-grab" : "arkhet-cursor"}`}
             >
               <input
                 style={{
                   cursor: isHandToolActive ? "grab" : "arkhet-cursor",
                 }}
-                className="bg-transparent focus:outline-none"
+                className={`bg-transparent focus:outline-none ${
+                  isHandToolActive ? "cursor-grab" : "arkhet-cursor"
+                }`}
                 defaultValue={shape.title}
                 onChange={(e) => {
                   debouncedUpdateShape({
@@ -609,7 +683,8 @@ export function DragAndDropComponent(props: {
             </div>
             <div
               className={`w-full h-full bg-[#1C1C1C]  ${
-                selectedShapeId == shape.id
+                selectedShapeId == shape.id ||
+                selectedShapeIds.includes(shape.id)
                   ? "page-focus border border-[#70acdc]"
                   : ""
               }`}
@@ -637,7 +712,7 @@ export function DragAndDropComponent(props: {
         ) : shape.type === "divider" ? (
           <div
             className={`p-2 ${
-              isHandToolActive ? "cursor: grab" : "cursor-ew-resize"
+              isHandToolActive ? "cursor-grab" : "cursor-ew-resize"
             }`}
             style={{ minWidth: "50px", minHeight: "5px" }}
           >
@@ -647,7 +722,7 @@ export function DragAndDropComponent(props: {
               }}
               className="bg-white rounded-full"
               style={{
-                height: "3px",
+                height: `${shape.thickness || 2}px`,
                 width: "100%",
                 backgroundColor: "white",
               }}
@@ -716,7 +791,7 @@ export function DragAndDropComponent(props: {
               selectedShapeId == shape.id
                 ? "page-focus border border-[#70acdc]"
                 : ""
-            }`}
+            } ${isHandToolActive ? "cursor-grab" : "arkhet-cursor"}`}
           ></div>
         ) : (
           <div>ERR: Nonexisting component</div>

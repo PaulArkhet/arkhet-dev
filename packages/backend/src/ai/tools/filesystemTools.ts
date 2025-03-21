@@ -7,6 +7,7 @@ import { codeModelToString, State, type CodeModel } from '../langgraph';
 import { mightFailSync } from 'might-fail';
 import tsParser from '@typescript-eslint/parser';
 import type { PostScreenshotMessage } from '../../interfaces/ws';
+import type { Task } from '../q-star/qStarGenerate';
 
 const ReactFunctionSchema = z.object({
   name: z
@@ -34,7 +35,7 @@ const ReactFunctionSchema = z.object({
     ),
 });
 
-export function generateCodeTools(state: typeof State.State) {
+export function generateCodeTools(state: Task) {
   return [
     tool((params: UpdateToolParams) => updateFunctionToolImpl(params, state), {
       name: 'updateFunctionCode',
@@ -97,7 +98,7 @@ const deleteFunctionToolSchema = z.object({
  * sent to the frontend
  * */
 
-function verifyCode(code: string) {
+export function verifyCode(code: string) {
   const { error: errorBabel } = mightFailSync(() =>
     babel.transform(code, {
       presets: ['react', 'env', 'typescript'],
@@ -154,11 +155,13 @@ function verifyCode(code: string) {
   }
 }
 
-type CreateNewFunctionToolParams = z.infer<typeof createNewFunctionToolSchema>;
+export type CreateNewFunctionToolParams = z.infer<
+  typeof createNewFunctionToolSchema
+>;
 
 export const updateFunctionToolImpl = async (
   input: UpdateToolParams,
-  state: typeof State.State
+  state: Task
 ): Promise<string> => {
   console.log('Agent modifying function name: ' + input.name);
 
@@ -200,11 +203,11 @@ export const updateFunctionToolImpl = async (
   return `Error when compiling: ${result.msg}`;
 };
 
-type UpdateToolParams = z.infer<typeof updateToolSchema>;
+export type UpdateToolParams = z.infer<typeof updateToolSchema>;
 
 const createNewFunctionToolImpl = async (
   input: CreateNewFunctionToolParams,
-  state: typeof State.State
+  state: Task
 ): Promise<string> => {
   const exists =
     state.model.functions.findIndex((func) => func.name === input.name) !== -1;
@@ -236,11 +239,15 @@ const createNewFunctionToolImpl = async (
   return `Error when compiling: ${result.msg}`;
 };
 
-type DeleteToolParams = z.infer<typeof deleteFunctionToolSchema>;
+export type DeleteToolParams = z.infer<typeof deleteFunctionToolSchema>;
 
 export const deleteFunctionToolImpl = (
   input: DeleteToolParams,
-  state: { model: CodeModel; socket: Socket }
+  state: {
+    model: CodeModel;
+    socket: Socket;
+    pageScreenshot: PostScreenshotMessage;
+  }
 ) => {
   const exists =
     state.model.functions.findIndex(
@@ -259,7 +266,7 @@ export const deleteFunctionToolImpl = (
 };
 
 function emitNewCode(
-  state: typeof State.State,
+  state: Task,
   updatedCode: string,
   res: (message: { type: 'success' } | { type: 'error'; msg: string }) => void
 ) {
@@ -276,6 +283,16 @@ function emitNewCode(
         console.log('Awaiting screenshot from frontend...');
         const screenshotPromise = await new Promise<PostScreenshotMessage>(
           (res) => {
+            function handle(message: PostScreenshotMessage) {
+              console.log('we got mail:', {
+                ...message,
+                screenshot:
+                  message.screenshot.length > 10 ? 'valid data...' : '',
+              });
+              if (message.id !== genId) return;
+              state.socket.off('screenshot', handle);
+              res(message);
+            }
             setTimeout(() => {
               res({
                 id: genId,
@@ -284,17 +301,10 @@ function emitNewCode(
                 type: 'screenshot',
               });
             }, 7000);
-            state.socket.on('screenshot', (message: PostScreenshotMessage) => {
-              console.log('we got mail:', {
-                ...message,
-                screenshot:
-                  message.screenshot.length > 10 ? 'valid data...' : '',
-              });
-              if (message.id !== genId) return;
-              res(message);
-            });
+            state.socket.on('screenshot', handle);
           }
         );
+
         state.pageScreenshot.message = screenshotPromise;
       }
 

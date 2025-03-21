@@ -37,6 +37,8 @@ import { AINotifications } from "@/components/artboard/components/AINotification
 import MagicMoment from "@/components/artboard/components/MagicMoment";
 import noproto from "/noproto.png";
 import { handleUpdateTitle } from "@/components/dashboard/Project";
+import { DragAndDropIframe } from "@/components/artboard/components/DragAndDropIframe";
+import { LivePreview } from "@/components/live-preview/LivePreview";
 
 export const Route = createFileRoute("/_authenticated/artboard/$projectId")({
   beforeLoad: async ({ context, params }) => {
@@ -210,6 +212,7 @@ export function Artboard() {
 
   const {
     setCurrentPrototype,
+    currentPrototype,
     isPrototypeReady,
     setIsPrototypeReady,
     setCurrentPrototypes,
@@ -231,7 +234,11 @@ export function Artboard() {
   }
 
   useEffect(() => {
-    if (prototypesQuery !== undefined && prototypesQuery.length > 0) {
+    if (
+      prototypesQuery !== undefined &&
+      prototypesQuery.length > 0 &&
+      currentPrototype === null
+    ) {
       const latestPrototype = prototypesQuery.reduce((latest, prototype) =>
         prototype.createdAt > latest.createdAt ? prototype : latest
       );
@@ -314,12 +321,19 @@ export function Artboard() {
         if (currentShape.type !== "card") {
           // find all permanent paths
           if (permanentPaths) {
-            permanentPaths.forEach((path) =>
-              deletePermanentPath({
-                projectId: project.projectId,
-                multipageId: path.id,
+            permanentPaths
+              .filter((path) => {
+                return (
+                  path.shapeStartId === currentShape.id ||
+                  path.shapeEndId === currentShape.id
+                );
               })
-            );
+              .forEach((path) =>
+                deletePermanentPath({
+                  projectId: project.projectId,
+                  multipageId: path.id,
+                })
+              );
           }
           return handleDeleteShape(selectedShapeId);
         }
@@ -328,12 +342,19 @@ export function Artboard() {
           return setWarningMode(true);
         } else {
           if (permanentPaths) {
-            permanentPaths.forEach((path) =>
-              deletePermanentPath({
-                projectId: project.projectId,
-                multipageId: path.id,
+            permanentPaths
+              .filter((path) => {
+                return (
+                  path.shapeStartId === currentShape.id ||
+                  path.shapeEndId === currentShape.id
+                );
               })
-            );
+              .forEach((path) =>
+                deletePermanentPath({
+                  projectId: project.projectId,
+                  multipageId: path.id,
+                })
+              );
           }
           return handleDeleteShape(selectedShapeId);
         }
@@ -643,7 +664,7 @@ export function Artboard() {
       {pageContent === "Gen UI" && !isPrototypeReady ? (
         <>
           {socket && <MagicMoment socket={socket} />}
-          <div className="absolute left-[10000000px]">
+          <div className="absolute left-[10000000px] overflow-hidden">
             <Canvas
               shapes={[]}
               pageRefList={{ current: [] }}
@@ -661,12 +682,14 @@ export function Artboard() {
               project={project}
               handleContextMenu={handleContextMenu}
               pageContent={pageContent}
+              isPrototypeReady={isPrototypeReady}
             />
           </div>
         </>
       ) : pageContent === "Gen UI" &&
         prototypesQuery !== undefined &&
-        prototypesQuery.length === 0 ? (
+        prototypesQuery.filter((prototype) => prototype.active === true)
+          .length === 0 ? (
         <div className="pl-[100px] pt-[200px] flex flex-col">
           <img src={noproto} className="mx-auto" />
           {shapes !== undefined && shapes.length > 1 ? (
@@ -696,31 +719,41 @@ export function Artboard() {
         </div>
       ) : (
         pageContent === "Gen UI" && (
-          <div className="overflow-hidden">
-            <Canvas
-              shapes={[]}
-              pageRefList={{ current: [] }}
-              allShapesRefList={{ current: [] }}
-              canvasRef={canvasRef}
-              // scale={scale}
-              canvasPosition={{ x: -1000, y: -1000 }}
-              isHandToolActive={isHandToolActive}
-              handleMouseDown={handleMouseDown}
-              handleMouseMove={handleMouseMove}
-              handleMouseUp={handleMouseUp}
-              handleCanvasClick={handleCanvasClick}
-              code={code}
-              socket={socket ? socket : undefined}
-              project={project}
-              handleContextMenu={handleContextMenu}
-              pageContent={pageContent}
-            />
-          </div>
+          <>
+            <div className="flex items-center justify-center border w-[calc(100%_-_500px)] h-[calc(100%_-56px)]">
+              <div className="relative left-[250px] h-full top-[56px] w-full">
+                {currentPrototype && (
+                  <LivePreview code={currentPrototype?.sourceCode} ref={null} />
+                )}
+              </div>
+            </div>
+            <div className="absolute left-[10000000px] overflow-hidden">
+              <Canvas
+                shapes={[]}
+                pageRefList={{ current: [] }}
+                allShapesRefList={{ current: [] }}
+                canvasRef={canvasRef}
+                // scale={scale}
+                canvasPosition={{ x: -1000, y: -1000 }}
+                isHandToolActive={isHandToolActive}
+                handleMouseDown={handleMouseDown}
+                handleMouseMove={handleMouseMove}
+                handleMouseUp={handleMouseUp}
+                handleCanvasClick={handleCanvasClick}
+                code={code}
+                socket={socket ? socket : undefined}
+                project={project}
+                handleContextMenu={handleContextMenu}
+                pageContent={pageContent}
+                isPrototypeReady={isPrototypeReady}
+              />
+            </div>
+          </>
         )
       )}
 
       {pageContent === "Interaction" && (
-        <ZoomableComponent panning={isHandToolActive}>
+        <ZoomableComponent panning={isHandToolActive} shapes={shapes}>
           <Canvas
             shapes={shapes}
             pageRefList={{ current: [] }}
@@ -736,6 +769,7 @@ export function Artboard() {
             project={project}
             handleContextMenu={handleContextMenu}
             pageContent={pageContent}
+            isPrototypeReady={isPrototypeReady}
           />
         </ZoomableComponent>
       )}
